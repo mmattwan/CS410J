@@ -1,49 +1,52 @@
 package edu.pdx.cs410J.markum2;
 
-import edu.pdx.cs410J.AbstractAppointment;
 import edu.pdx.cs410J.AbstractAppointmentBook;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Class that defines an appointment book
+ *
+ * @author Markus Mattwandel
+ * @version 2016.06.30
+ */
 public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
-  String owner;
-//  Collection<Appointment> appointments;
-  ArrayList<Appointment> apptBook = new ArrayList<>();
+  private String owner; // owner of the appointment book
+  private ArrayList<Appointment> apptBook = new ArrayList<>();  // list of appointments
 
-  public AppointmentBook(String owner)
-  {
-    System.out.println("Constructing appointmentBook for "+owner);
-      this.owner = owner;
+  /**
+   * Constructs an empty appointment book.
+   *
+   * @param  owner  owner of the appointment book
+   */
+  public AppointmentBook(String owner)   {
+    this.owner = owner;
   }
 
   @Override
-  public String getOwnerName()
-  {
+  public String getOwnerName() {
     throw new UnsupportedOperationException("This method is not implemented yet");
   }
 
   @Override
-  public Collection<Appointment> getAppointments()
-  {
+  public Collection<Appointment> getAppointments() {
     throw new UnsupportedOperationException("This method is not implemented yet");
   }
 
+  /**
+   * Adds an appointment to the apppointment book
+   *
+   * @param  appt  appointment to add
+   */
   @Override
-  public void addAppointment(Appointment appt)
-  {
-    System.out.println("Adding appointment to appointment book");
+  public void addAppointment(Appointment appt) {
     apptBook.add(appt);
   }
 
   @Override
-  public String toString()
-  {
+  public String toString() {
     return this.getOwnerName() + "\'s appointment book with " + this.getAppointments().size() + " appointments";
   }
-
-
-
-
 }
