@@ -39,12 +39,14 @@ public class Project2 {
   private static void printReadme() {
     System.out.println("\n\nCS410J Project 2");
     System.out.println("Author: Markus Mattwandel\n");
-    System.out.println("This program creates an appointment book and adds a single appointment.");
-    System.out.println("Only 3 options are supported and must precede appointment information:");
+    System.out.println("This program creates an appointment book and adds a single appointment.  If");
+    System.out.println("-textFile is used, it also reads from and adds the new appointments to the ");
+    System.out.println("specified file,\n");
+    System.out.println("The following 3 options are supported:");
     System.out.println("  -print\t\t to print the appointment (provided it can be created)");
     System.out.println("  -textFile file\t file name from which to read/write the appointment book");
     System.out.println("  -README\t\t to print this message");
-    System.out.println("Options can be specified in any order.\n");
+    System.out.println("Options can be specified in any order but must precede appointment information.\n");
     System.out.println("Appointments must adhere to the following format in the order indicated:");
     System.out.println("  owner:\t\t the owner of the appointment book");
     System.out.println("  description:\t\t the description of the appointment");
@@ -55,8 +57,10 @@ public class Project2 {
     System.out.println("Time can have 1 or 2 digits for hour, but must have 2 digits for minutes.");
     System.out.println("Date can have 1 or 2 digits for month and day, but must have 4 digits for year.");
     System.out.println("owner and description can use double quotes to span multiple words.\n");
+    System.out.println("An appointment must always be specified.\n");
   }
 
+// TODO: port to TextParser
   private static void FileReader(String fileName) {
 
     BufferedReader br = null;
@@ -118,6 +122,7 @@ public class Project2 {
     }
   }
 
+// TODO: port to TextDumper
   private static void FileWriter(String fileName) {
 
     File file = new File(fileName);
@@ -233,10 +238,10 @@ public class Project2 {
 
     // cmdLine good: start processing!
 
-    // if -textFile read them from file and add to AppointmentBook
+    // if -textFile then read them from file and add to AppointmentBook
     if (textFileOption) {
+// TODO: use TextParser instead
       FileReader(textFileName);
-      // TODO: Add to AppointmentBook
     }
     // Construct new Appointment
     Appointment newAppointment = new Appointment(owner, description, beginDate+" "+beginTime, endDate+" "+endTime);
@@ -245,7 +250,7 @@ public class Project2 {
     newAppointmentBook.addAppointment(newAppointment);
 
     // if -textFile, write all appointments back out
-    // TODO: implement ^^^
+// TODO: use TextDumper
 
     // if -print specified, print new appointment
     if (printOption) System.out.println(newAppointment.getDescription());
