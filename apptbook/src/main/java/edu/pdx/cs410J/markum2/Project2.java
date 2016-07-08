@@ -1,5 +1,7 @@
 package edu.pdx.cs410J.markum2;
 
+import java.io.*;
+
 /**
  * The main class for the CS410J appointment book Project 2.
  *
@@ -8,7 +10,10 @@ package edu.pdx.cs410J.markum2;
  */
 public class Project2 {
 
-  /**
+  private static String owner;
+  private static AppointmentBook newAppointmentBook = new AppointmentBook(owner);
+
+    /**
    * Validates that date contains 1 or 2 digits for day and month, and 4 digits for year
    *
    * @param  dateString string to validate
@@ -52,6 +57,99 @@ public class Project2 {
     System.out.println("owner and description can use double quotes to span multiple words.\n");
   }
 
+  private static void FileReader(String fileName) {
+
+    BufferedReader br = null;
+    String currentLine;
+    Integer lineNumber = 1;
+
+    try {
+
+      // if file does not exist, then create it
+      File file = new File(fileName);
+      if (!file.exists()) file.createNewFile();
+
+      br = new BufferedReader(new FileReader(fileName));
+
+      while ((currentLine = br.readLine()) != null) {
+
+        // Desconstruct .CSV lines
+        String[] parts = currentLine.split(",");
+
+        // if first line, confirm owner is correct
+        if (lineNumber==1 && !parts[0].contains(owner)) {
+          System.out.println(owner+" does not own "+parts[0]);
+          System.exit(1);
+        }
+        else if (parts.length != 1){ // need this to skip <newLine>s
+
+          // make sure there are 5 parts
+          if (parts.length !=5) {
+            System.out.println("Malformed textFile line "+lineNumber+": "+currentLine);
+            System.exit(1);
+          }
+
+          // Parse out fields
+          String description = parts[0];
+          String beginDate = parts[1];
+          String beginTime = parts[2];
+          String endDate = parts[3];
+          String endTime = parts[4];
+
+          // Construct new Appointment
+          Appointment newAppointment = new Appointment(owner, description, beginDate + " " + beginTime, endDate + " " + endTime);
+
+          // Add new Appointment to AppointmentBook
+          newAppointmentBook.addAppointment(newAppointment);
+        }
+        lineNumber++;
+      }
+    }
+    catch (IOException ex) {
+      ex.printStackTrace();
+    }
+    finally {
+      try {
+        if (br != null) br.close();
+      }
+      catch (IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+  }
+
+  private static void FileWriter(String fileName) {
+
+    File file = new File(fileName);
+    String description = "";
+    String beginDate = "";
+    String beginTime = "";
+    String endDate = "";
+    String endTime = "";
+
+    try {
+
+      // if file does not exist, then create it
+      if (!file.exists()) file.createNewFile();
+
+      FileWriter fw = new FileWriter(file.getAbsoluteFile());
+      BufferedWriter bw = new BufferedWriter(fw);
+
+      // first line indicates the owner
+      bw.write(owner + "\'s Appointment Book:\n");
+
+      // loop through all Appointments in AppointmentBook
+      // TODO: add loop through AddressBook
+      bw.write(description + ", " + beginDate + ", " + beginTime + ", " + endDate + ", " + endTime + "\n");
+
+      // close the file
+      bw.close();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * main for program.  Parses command line, processes options, and if arguments are valid,
    * creates appointment, adds it to appointment book, and prints the new appointmnet if
@@ -76,7 +174,7 @@ public class Project2 {
       // an arg preceded with a dash is an option
       if (args[i].substring(0,1).contains("-")) {
 
-        // count #options found to use later
+        // count #options found
         optCnt++;
 
         // check for valid options
@@ -110,21 +208,17 @@ public class Project2 {
       }
     }
 
-    if (readmeOption) System.out.println("-README set");
-    if (printOption) System.out.println("-print set");
-    if (textFileOption) System.out.println("-textFile "+textFileName+" set");
-
     // print README and exit if -README found
     if (readmeOption) { printReadme(); System.exit(0); }
 
-    // it takes exactly 6 args to make an appointment: add that to optCnt to verify and exit it wrong
+    // it takes exactly 6 args to specify an appointment: add that to optCnt to verify and exit it wrong amount
     if (optCnt+6 != args.length) {
       System.err.println("Invalid #arguments to create appointment");
       System.exit(1);
     }
 
-    // Extract appointment details from args
-    String owner = args[args.length-6];
+    // Extract new appointment details from args
+    owner = args[args.length-6];
     String description = args[args.length-5];
     String beginDate = args[args.length-4];
     String beginTime = args[args.length-3];
@@ -137,18 +231,26 @@ public class Project2 {
     if (!validDate(endDate))   { System.out.println("Bad endDate format.");   System.exit(1); }
     if (!validTime(endTime))   { System.out.println("Bad endTime format.");   System.exit(1); }
 
-    // Construct AppointmentBook
-    AppointmentBook newAppointmentBook = new AppointmentBook(owner);
+    // cmdLine good: start processing!
 
-    // Construct Appointment
+    // if -textFile read them from file and add to AppointmentBook
+    if (textFileOption) {
+      FileReader(textFileName);
+      // TODO: Add to AppointmentBook
+    }
+    // Construct new Appointment
     Appointment newAppointment = new Appointment(owner, description, beginDate+" "+beginTime, endDate+" "+endTime);
 
     // Add new Appointment to AppointmentBook
     newAppointmentBook.addAppointment(newAppointment);
 
-    // if -print specified, print appointment
+    // if -textFile, write all appointments back out
+    // TODO: implement ^^^
+
+    // if -print specified, print new appointment
     if (printOption) System.out.println(newAppointment.getDescription());
 
+    // if you've made it this far, exit with Success
     System.exit(0);
   }
 }
