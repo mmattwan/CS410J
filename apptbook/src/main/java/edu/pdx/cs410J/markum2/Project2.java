@@ -12,9 +12,10 @@ import java.io.FileNotFoundException;
  */
 public class Project2 {
 
+  // The AppointmentBook the project will work on
   public static AppointmentBook newAppointmentBook = new AppointmentBook();
 
-    /**
+  /**
    * Validates that date contains 1 or 2 digits for day and month, and 4 digits for year
    *
    * @param  dateString string to validate
@@ -61,40 +62,6 @@ public class Project2 {
     System.out.println("An appointment must always be specified.\n");
   }
 
-/*
-// TODO: port to TextDumper
-  private static void FileWriter(String fileName) {
-
-    File file = new File(fileName);
-    String description = "";
-    String beginDate = "";
-    String beginTime = "";
-    String endDate = "";
-    String endTime = "";
-
-    try {
-
-      // if file does not exist, then create it
-      if (!file.exists()) file.createNewFile();
-
-      FileWriter fw = new FileWriter(file.getAbsoluteFile());
-      BufferedWriter bw = new BufferedWriter(fw);
-
-      // first line indicates the owner
-      bw.write(owner + "\'s Appointment Book:\n");
-
-      // loop through all Appointments in AppointmentBook
-      // TODO: add loop through AddressBook
-      bw.write(description + ", " + beginDate + ", " + beginTime + ", " + endDate + ", " + endTime + "\n");
-
-      // close the file
-      bw.close();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-*/
-
   /**
    * main for program.  Parses command line, processes options, and if arguments are valid,
    * creates appointment, adds it to appointment book, and prints the new appointmnet if
@@ -127,21 +94,25 @@ public class Project2 {
           case "-print": printOption = Boolean.TRUE; break;
           case "-README": readmeOption = Boolean.TRUE; break;
           case "-textFile":
+
             // verify that a fileName is specified after -textFile, exit if not
             if (i == args.length - 1) {
               System.err.println("No arguments after -textFile");
               System.exit(1);
             }
+
             // verify that no options follow directly after -textFile, exit if not
             if (args[i + 1].substring(0, 1).contains("-")) {
               System.err.println("No fileName specified after -textFile");
               System.exit(1);
             }
+
             // Set textFile option and save textFile name
             textFileOption = Boolean.TRUE;
             optCnt++;  // textFileName is also an option!
             textFileName = args[i + 1];
             break;
+
           // Exit if option is invalid
           default:
             System.err.println("Invalid option found: " + args[i]);

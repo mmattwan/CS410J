@@ -27,6 +27,7 @@ class TextParser implements AppointmentBookParser {
     this(new File(fileName));
     owner = thisOwner;
 
+//  TODO: if file does not exist, create it
 //    File file2 = new File(fileName);
 //    if (!file2.exists()) file2.createNewFile();
   }
@@ -37,12 +38,6 @@ class TextParser implements AppointmentBookParser {
 
   public TextParser(Reader reader) {
     this.in = new LineNumberReader(reader);
-
-      /*
-      // if file does not exist, then create it
-      File file = new File(fileName);
-      if (!file.exists()) file.createNewFile();
-      */
   }
 
 // INSTANCE METHODS
