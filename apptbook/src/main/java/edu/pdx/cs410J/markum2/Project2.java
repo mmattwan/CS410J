@@ -80,7 +80,7 @@ public class Project2 {
     // no args is an error
     if (args.length==0) { System.err.println("Missing command line arguments"); System.exit(1); }
 
-    // find all options
+    // find all -options
     for (int i=0; i<args.length; i++) {
 
       // an arg preceded with a dash is an option
@@ -153,6 +153,9 @@ public class Project2 {
         AppointmentBook book = parser.parse();
       }
       catch (FileNotFoundException ex) {
+//        TODO: if file does not exist, create i
+//        File file2 = new File(fileName);
+//        if (!file2.exists()) file2.createNewFile();
         System.err.println("** Could not find file " + textFileName);
       }
       catch (ParserException ex) {
@@ -167,7 +170,7 @@ public class Project2 {
     newAppointmentBook.addAppointment(newAppointment);
 
     // if -textFile, write all appointments back out
-//    TODO: use TextDumper
+    newAppointmentBook.getAppointments();
 
     // if -print specified, print new appointment
     if (printOption) System.out.println(newAppointment.getDescription());

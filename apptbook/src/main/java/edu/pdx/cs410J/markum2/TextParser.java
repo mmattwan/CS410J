@@ -18,7 +18,6 @@ import static edu.pdx.cs410J.markum2.Project2.newAppointmentBook;
 class TextParser implements AppointmentBookParser {
 
   private LineNumberReader in;     // Read input from here
-  private AppointmentBook book;    // The AppointmentBook we're building
   private String owner;            // The owner for the AppointmentBook
 
 // CONSTRUCTORS
@@ -27,9 +26,6 @@ class TextParser implements AppointmentBookParser {
     this(new File(fileName));
     owner = thisOwner;
 
-//  TODO: if file does not exist, create it
-//    File file2 = new File(fileName);
-//    if (!file2.exists()) file2.createNewFile();
   }
 
   public TextParser(File file) throws FileNotFoundException {
@@ -50,13 +46,12 @@ class TextParser implements AppointmentBookParser {
   @Override
   public AppointmentBook parse() throws ParserException {
 
-    this.book = new AppointmentBook();
     Integer lineNum = 1;
 
     try {
       while (this.in.ready()) {
         String line = this.in.readLine();
-        System.out.println("Read "+lineNum+": "+line);
+//        System.out.println("Read "+lineNum+": "+line);
 
         // Deconstruct .CSV lines
         String[] parts = line.split(",");
@@ -65,12 +60,12 @@ class TextParser implements AppointmentBookParser {
         if (parts.length != 6) error("Malformed input file.");
 
         // Parts out fields
-        String readOwner = parts[0];
-        String description = parts[1];
-        String beginDate = parts[2];
-        String beginTime = parts[3];
-        String endDate = parts[4];
-        String endTime = parts[5];
+        String readOwner = parts[0].trim();
+        String description = parts[1].trim();
+        String beginDate = parts[2].trim();
+        String beginTime = parts[3].trim();
+        String endDate = parts[4].trim();
+        String endTime = parts[5].trim();
 
         // Make sure there are 6 elements
         if (!readOwner.equals(owner)) error("Wrong Owner.");

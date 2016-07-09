@@ -40,13 +40,13 @@ public class Appointment extends AbstractAppointment {
     throw new UnsupportedOperationException("This method is not implemented yet");
   }
 
-  @Override
 
   /**
    * Returns an appointment in a string
    *
    * @return s  string containing appointment information
    */
+  @Override
   public String getDescription() {
 
     String s = this.owner +" has this appointment:\n";

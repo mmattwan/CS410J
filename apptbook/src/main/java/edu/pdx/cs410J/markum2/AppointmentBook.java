@@ -22,27 +22,36 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
    * @param  owner  owner of the appointment book
    */
   public AppointmentBook() {
-//    this.owner = owner;
+
   }
 
   @Override
   public String getOwnerName() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return (this.owner);
   }
 
   @Override
   public Collection<Appointment> getAppointments() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+
+    System.out.println("These are a total of "+apptBook.size()+" appointments as follows:");
+    Appointment a;
+    for (int i=0; i<apptBook.size()-1; i++) {
+      a = apptBook.get(i);
+      System.out.println(a.getDescription());
+    }
+
+    return apptBook;
   }
 
   /**
-   * Adds an appointment to the apppointment book
+   * Adds an appointment to the appointment book
    *
    * @param  appt  appointment to add
    */
   @Override
   public void addAppointment(Appointment appt) {
     apptBook.add(appt);
+//    System.out.println("Now there are "+apptBook.size()+" appointments");
   }
 
   @Override
