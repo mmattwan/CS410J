@@ -21,8 +21,8 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
    *
    * @param  owner  owner of the appointment book
    */
-  public AppointmentBook(String owner)   {
-    this.owner = owner;
+  public AppointmentBook()   {
+//    this.owner = owner;
   }
 
   @Override

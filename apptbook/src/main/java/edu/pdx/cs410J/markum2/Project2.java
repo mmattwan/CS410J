@@ -1,6 +1,8 @@
 package edu.pdx.cs410J.markum2;
 
-import java.io.*;
+import edu.pdx.cs410J.ParserException;
+
+import java.io.FileNotFoundException;
 
 /**
  * The main class for the CS410J appointment book Project 2.
@@ -10,8 +12,7 @@ import java.io.*;
  */
 public class Project2 {
 
-  private static String owner;
-  private static AppointmentBook newAppointmentBook = new AppointmentBook(owner);
+  public static AppointmentBook newAppointmentBook = new AppointmentBook();
 
     /**
    * Validates that date contains 1 or 2 digits for day and month, and 4 digits for year
@@ -60,68 +61,7 @@ public class Project2 {
     System.out.println("An appointment must always be specified.\n");
   }
 
-// TODO: port to TextParser
-  private static void FileReader(String fileName) {
-
-    BufferedReader br = null;
-    String currentLine;
-    Integer lineNumber = 1;
-
-    try {
-
-      // if file does not exist, then create it
-      File file = new File(fileName);
-      if (!file.exists()) file.createNewFile();
-
-      br = new BufferedReader(new FileReader(fileName));
-
-      while ((currentLine = br.readLine()) != null) {
-
-        // Desconstruct .CSV lines
-        String[] parts = currentLine.split(",");
-
-        // if first line, confirm owner is correct
-        if (lineNumber==1 && !parts[0].contains(owner)) {
-          System.out.println(owner+" does not own "+parts[0]);
-          System.exit(1);
-        }
-        else if (parts.length != 1){ // need this to skip <newLine>s
-
-          // make sure there are 5 parts
-          if (parts.length !=5) {
-            System.out.println("Malformed textFile line "+lineNumber+": "+currentLine);
-            System.exit(1);
-          }
-
-          // Parse out fields
-          String description = parts[0];
-          String beginDate = parts[1];
-          String beginTime = parts[2];
-          String endDate = parts[3];
-          String endTime = parts[4];
-
-          // Construct new Appointment
-          Appointment newAppointment = new Appointment(owner, description, beginDate + " " + beginTime, endDate + " " + endTime);
-
-          // Add new Appointment to AppointmentBook
-          newAppointmentBook.addAppointment(newAppointment);
-        }
-        lineNumber++;
-      }
-    }
-    catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    finally {
-      try {
-        if (br != null) br.close();
-      }
-      catch (IOException ex) {
-        ex.printStackTrace();
-      }
-    }
-  }
-
+/*
 // TODO: port to TextDumper
   private static void FileWriter(String fileName) {
 
@@ -153,7 +93,7 @@ public class Project2 {
     catch (IOException e) {
       e.printStackTrace();
     }
-  }
+*/
 
   /**
    * main for program.  Parses command line, processes options, and if arguments are valid,
@@ -183,32 +123,29 @@ public class Project2 {
         optCnt++;
 
         // check for valid options
-        if (args[i].equals("-print")) printOption=Boolean.TRUE;
-        else if (args[i].equals("-README")) readmeOption=Boolean.TRUE;
-        else if (args[i].equals("-textFile")) {
-
-          // verify that a fileName is specified after -textFile, exit if not
-          if (i == args.length-1) {
-            System.err.println("No arguments after -textFile");
+        switch (args[i]) {
+          case "-print": printOption = Boolean.TRUE; break;
+          case "-README": readmeOption = Boolean.TRUE; break;
+          case "-textFile":
+            // verify that a fileName is specified after -textFile, exit if not
+            if (i == args.length - 1) {
+              System.err.println("No arguments after -textFile");
+              System.exit(1);
+            }
+            // verify that no options follow directly after -textFile, exit if not
+            if (args[i + 1].substring(0, 1).contains("-")) {
+              System.err.println("No fileName specified after -textFile");
+              System.exit(1);
+            }
+            // Set textFile option and save textFile name
+            textFileOption = Boolean.TRUE;
+            optCnt++;  // textFileName is also an option!
+            textFileName = args[i + 1];
+            break;
+          // Exit if option is invalid
+          default:
+            System.err.println("Invalid option found: " + args[i]);
             System.exit(1);
-          }
-
-          // verify that no options follow directly after -textFile, exit if not
-          if (args[i+1].substring(0,1).contains("-")) {
-            System.err.println("No fileName specified after -textFile");
-            System.exit(1);
-          }
-
-          // Set textFile option and save textFile name
-          textFileOption = Boolean.TRUE;
-          optCnt++;  // textFileName is also an option!
-          textFileName = args[i + 1];
-        }
-
-        // Exit if option is invalid
-        else {
-          System.err.println("Invalid option found: "+args[i]);
-          System.exit(1);
         }
       }
     }
@@ -223,7 +160,7 @@ public class Project2 {
     }
 
     // Extract new appointment details from args
-    owner = args[args.length-6];
+    String owner =  args[args.length-6];
     String description = args[args.length-5];
     String beginDate = args[args.length-4];
     String beginTime = args[args.length-3];
@@ -240,17 +177,26 @@ public class Project2 {
 
     // if -textFile then read them from file and add to AppointmentBook
     if (textFileOption) {
-// TODO: use TextParser instead
-      FileReader(textFileName);
+      try {
+        TextParser parser = new TextParser(textFileName,owner);
+        AppointmentBook book = parser.parse();
+      }
+      catch (FileNotFoundException ex) {
+        System.err.println("** Could not find file " + textFileName);
+      }
+      catch (ParserException ex) {
+        System.err.println("** " + ex.getMessage());
+      }
     }
-    // Construct new Appointment
+
+    // Construct new Appointment from cmdLine
     Appointment newAppointment = new Appointment(owner, description, beginDate+" "+beginTime, endDate+" "+endTime);
 
     // Add new Appointment to AppointmentBook
     newAppointmentBook.addAppointment(newAppointment);
 
     // if -textFile, write all appointments back out
-// TODO: use TextDumper
+//    TODO: use TextDumper
 
     // if -print specified, print new appointment
     if (printOption) System.out.println(newAppointment.getDescription());
