@@ -154,13 +154,11 @@ public class Project2 {
         AppointmentBook book = parser.parse();
       }
       catch (FileNotFoundException ex) {
-//        TODO: if file does not exist, create i
-//        File file2 = new File(fileName);
-//        if (!file2.exists()) file2.createNewFile();
-        System.err.println("** Could not find file " + textFileName);
+//      Catch exception, but do nothing which creates an empty file as specified
       }
       catch (ParserException ex) {
         System.err.println("** " + ex.getMessage());
+        System.exit(1);
       }
     }
 
@@ -177,10 +175,11 @@ public class Project2 {
     }
     catch (IOException ex) {
       System.err.println("** " + ex.getMessage());
+      System.exit(1);
     }
 
     // if -print specified, print new appointment
-    if (printOption) System.out.println(newAppointment.getDescription());
+    if (printOption) System.out.println("Added to "+textFileName+": "+newAppointment.getDescription());
 
     // if you've made it this far, exit with Success
     System.exit(0);

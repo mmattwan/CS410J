@@ -48,8 +48,6 @@ public class Appointment extends AbstractAppointment {
    */
   @Override
   public String getDescription() {
-
     return(this.owner+", "+this.description+", "+this.beginTime+", "+this.endTime);
-
   }
 }

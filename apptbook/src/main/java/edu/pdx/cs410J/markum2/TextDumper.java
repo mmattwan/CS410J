@@ -4,8 +4,6 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookDumper;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Class that reads the contents of a text file and from it creates an appointment book
@@ -15,70 +13,46 @@ import java.util.Collection;
  * @version 2016.07.13
  */
 
-public class TextDumper implements AppointmentBookDumper {
+class TextDumper implements AppointmentBookDumper {
 
   private PrintWriter pw;      // Dumping destination
 
   public TextDumper(String fileName) throws IOException {
-//    this(new File(fileName));
+    this(new File(fileName));
   }
-
-  public TextDumper(File file) throws IOException {
+  private TextDumper(File file) throws IOException {
     this(new PrintWriter(new FileWriter(file), true));
   }
-
-  public TextDumper(PrintWriter pw) {
+  private TextDumper(PrintWriter pw) {
     this.pw = pw;
   }
 
-//  @Override
-  public void dump(AbstractAppointmentBook aAB) throws IOException {
 
-    AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)aAB;
+  public void dump(AbstractAppointmentBook AbstractAppointmentBook) throws IOException {
 
-    System.out.println(nonAbstractAppointmentBook.apptBook.size());
+    AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)AbstractAppointmentBook;
+    Appointment appt;
 
-    Appointment a;
+//    try {
+      for (int i = 0; i <= nonAbstractAppointmentBook.apptBook.size() - 1; i++) {
+        appt = nonAbstractAppointmentBook.apptBook.get(i);
 
-    for (int i=0; i<nonAbstractAppointmentBook.apptBook.size()-1; i++) {
-      a = nonAbstractAppointmentBook.apptBook.get(i);
-      System.out.println("In TextDumper: "+a.getDescription());
-    }
+        String[] apptParts = appt.getDescription().split(",");
+        String beginDateTime = apptParts[2].trim();
+        String[] beginDateTimeParts = beginDateTime.split(" ");
+        String beginDate = beginDateTimeParts[0]; String beginTime = beginDateTimeParts[1];
+        String endDateTime = apptParts[3].trim();
+        String[] endDateTimeParts = endDateTime.split(" ");
+        String endDate = endDateTimeParts[0]; String endTime = endDateTimeParts[1];
 
+        pw.append(apptParts[0]+","+apptParts[1]+", "+beginDate+", "+beginTime+", "+endDate+", "+endTime+"\n");
+        pw.flush();
+      }
+      pw.close();
+//    }
+//    catch (IOException ex) {
+//      ex.printStackTrace();
+//    }
   }
-
-
 }
 
-
-
-
-/*
-// TODO: port to TextDumper
-
-    File file = new File(fileName);
-    String description = "";
-    String beginDate = "";
-    String beginTime = "";
-    String endDate = "";
-    String endTime = "";
-
-    try {
-
-      // if file does not exist, then create it
-      if (!file.exists()) file.createNewFile();
-
-      FileWriter fw = new FileWriter(file.getAbsoluteFile());
-      BufferedWriter bw = new BufferedWriter(fw);
-
-      // loop through all Appointments in AppointmentBook
-      // TODO: add loop through AddressBook
-      bw.write(owner+", "+description + ", " + beginDate + ", " + beginTime + ", " + endDate + ", " + endTime + "\n");
-
-      // close the file
-      bw.close();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-*/

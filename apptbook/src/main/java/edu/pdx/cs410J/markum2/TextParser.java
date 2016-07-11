@@ -20,30 +20,22 @@ class TextParser implements AppointmentBookParser {
   private LineNumberReader in;     // Read input from here
   private String owner;            // The owner for the AppointmentBook
 
-// CONSTRUCTORS
   public TextParser(String fileName, String thisOwner) throws FileNotFoundException {
-
     this(new File(fileName));
     owner = thisOwner;
-
   }
-
-  public TextParser(File file) throws FileNotFoundException {
+  private TextParser(File file) throws FileNotFoundException {
     this(new FileReader(file));
   }
-
-  public TextParser(Reader reader) {
+  private TextParser(Reader reader) {
     this.in = new LineNumberReader(reader);
   }
 
-// INSTANCE METHODS
   private void error(String message) throws ParserException {
     int lineNumber = this.in.getLineNumber();
     String m = "Error at line " + lineNumber + ": " + message;
     throw new ParserException(m);
   }
-
-  @Override
   public AppointmentBook parse() throws ParserException {
 
     Integer lineNum = 1;
@@ -51,7 +43,6 @@ class TextParser implements AppointmentBookParser {
     try {
       while (this.in.ready()) {
         String line = this.in.readLine();
-//        System.out.println("Read "+lineNum+": "+line);
 
         // Deconstruct .CSV lines
         String[] parts = line.split(",");
@@ -59,7 +50,7 @@ class TextParser implements AppointmentBookParser {
         // Make sure there are 6 elements
         if (parts.length != 6) error("Malformed input file.");
 
-        // Parts out fields
+        // Parse out fields
         String readOwner = parts[0].trim();
         String description = parts[1].trim();
         String beginDate = parts[2].trim();
