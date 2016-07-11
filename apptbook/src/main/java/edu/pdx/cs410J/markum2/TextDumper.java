@@ -4,6 +4,8 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookDumper;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Class that reads the contents of a text file and from it creates an appointment book
@@ -13,17 +15,12 @@ import java.io.*;
  * @version 2016.07.13
  */
 
-/*
-public interface AppointmentBookDumper {
-  void dump(AbstractAppointmentBook var1) throws IOException;
-}
-*/
-class TextDumper implements AppointmentBookDumper {
+public class TextDumper implements AppointmentBookDumper {
 
   private PrintWriter pw;      // Dumping destination
 
   public TextDumper(String fileName) throws IOException {
-    this(new File(fileName));
+//    this(new File(fileName));
   }
 
   public TextDumper(File file) throws IOException {
@@ -34,16 +31,20 @@ class TextDumper implements AppointmentBookDumper {
     this.pw = pw;
   }
 
-  public void dump(AbstractAppointmentBook apptBook) throws IOException {
+//  @Override
+  public void dump(AbstractAppointmentBook aAB) throws IOException {
 
-/*
-    System.out.println("These are a total of "+apptBook.size()+" appointments as follows:");
+    AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)aAB;
+
+    System.out.println(nonAbstractAppointmentBook.apptBook.size());
+
     Appointment a;
-    for (int i=0; i<apptBook.size()-1; i++) {
-      a = apptBook.get(i);
-      System.out.println(a.getDescription());
+
+    for (int i=0; i<nonAbstractAppointmentBook.apptBook.size()-1; i++) {
+      a = nonAbstractAppointmentBook.apptBook.get(i);
+      System.out.println("In TextDumper: "+a.getDescription());
     }
-*/
+
   }
 
 
@@ -54,7 +55,6 @@ class TextDumper implements AppointmentBookDumper {
 
 /*
 // TODO: port to TextDumper
-  private static void FileWriter(String fileName) {
 
     File file = new File(fileName);
     String description = "";
@@ -71,12 +71,9 @@ class TextDumper implements AppointmentBookDumper {
       FileWriter fw = new FileWriter(file.getAbsoluteFile());
       BufferedWriter bw = new BufferedWriter(fw);
 
-      // first line indicates the owner
-      bw.write(owner + "\'s Appointment Book:\n");
-
       // loop through all Appointments in AppointmentBook
       // TODO: add loop through AddressBook
-      bw.write(description + ", " + beginDate + ", " + beginTime + ", " + endDate + ", " + endTime + "\n");
+      bw.write(owner+", "+description + ", " + beginDate + ", " + beginTime + ", " + endDate + ", " + endTime + "\n");
 
       // close the file
       bw.close();

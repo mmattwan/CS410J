@@ -3,6 +3,7 @@ package edu.pdx.cs410J.markum2;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * The main class for the CS410J appointment book Project 2.
@@ -75,7 +76,7 @@ public class Project2 {
     Boolean readmeOption = Boolean.FALSE;   // set if -README cmd line option found
     Boolean textFileOption = Boolean.FALSE; // set if -textFile file cmd line option found
     String textFileName = "";               // name of -textFile file
-    Integer optCnt = 0;                     // number of options specified
+    Integer optCnt = 0;                     // number of options found
 
     // no args is an error
     if (args.length==0) { System.err.println("Missing command line arguments"); System.exit(1); }
@@ -170,7 +171,13 @@ public class Project2 {
     newAppointmentBook.addAppointment(newAppointment);
 
     // if -textFile, write all appointments back out
-    newAppointmentBook.getAppointments();
+    try {
+      TextDumper dumper = new TextDumper(textFileName);
+      dumper.dump(newAppointmentBook);
+    }
+    catch (IOException ex) {
+      System.err.println("** " + ex.getMessage());
+    }
 
     // if -print specified, print new appointment
     if (printOption) System.out.println(newAppointment.getDescription());

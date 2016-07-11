@@ -14,7 +14,7 @@ import java.util.Collection;
 public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
   private String owner; // owner of the appointment book
-  private ArrayList<Appointment> apptBook = new ArrayList<>();  // list of appointments
+  public ArrayList<Appointment> apptBook = new ArrayList<>();  // list of appointments
 
   /**
    * Constructs an empty appointment book.
@@ -30,15 +30,13 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
     return (this.owner);
   }
 
+  /**
+   * Returns the appointmentBook (Arraylist[] for Appointments
+   *
+   * @return apptBook (Arraylist[] for Appointments
+   */
   @Override
   public Collection<Appointment> getAppointments() {
-
-    System.out.println("These are a total of "+apptBook.size()+" appointments as follows:");
-    Appointment a;
-    for (int i=0; i<apptBook.size()-1; i++) {
-      a = apptBook.get(i);
-      System.out.println(a.getDescription());
-    }
 
     return apptBook;
   }

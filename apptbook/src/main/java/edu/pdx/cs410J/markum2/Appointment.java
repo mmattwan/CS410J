@@ -49,10 +49,7 @@ public class Appointment extends AbstractAppointment {
   @Override
   public String getDescription() {
 
-    String s = this.owner +" has this appointment:\n";
-    s += "\t   Title: " + this.description + "\n";
-    s += "\tStarting: " + this.beginTime + "\n";
-    s += "\t  Ending: " + this.endTime + ".";
-    return(s);
+    return(this.owner+", "+this.description+", "+this.beginTime+", "+this.endTime);
+
   }
 }
