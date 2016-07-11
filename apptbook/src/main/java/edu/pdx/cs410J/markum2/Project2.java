@@ -171,17 +171,20 @@ public class Project2 {
     newAppointmentBook.addAppointment(newAppointment);
 
     // if -textFile specified, write all appointments back out
-    try {
-      TextDumper dumper = new TextDumper(textFileName);
-      dumper.dump(newAppointmentBook);
-    }
-    catch (IOException ex) {
-      System.err.println("** " + ex.getMessage());
-      System.exit(1);
+    if (textFileOption) {
+      try {
+        TextDumper dumper = new TextDumper(textFileName);
+        dumper.dump(newAppointmentBook);
+      } catch (IOException ex) {
+        System.err.println("** " + ex.getMessage());
+        System.exit(1);
+      }
     }
 
     // if -print specified, print out new appointment
-    if (printOption) System.out.println("Added to "+textFileName+": "+newAppointment.getDescription());
+    if (printOption)
+      if (textFileOption) System.out.println("Added to "+textFileName+": "+newAppointment.getDescription());
+      else System.out.println("Read: "+newAppointment.getDescription());
 
     // if you've made it this far, exit with Success
     System.exit(0);
