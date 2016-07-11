@@ -18,40 +18,43 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
   /**
    * Constructs an empty appointment book.
-   *
-   * @param  owner  owner of the appointment book
    */
   public AppointmentBook() {
-
   }
 
+  /**
+   *
+   * Method to return AppointmentBook owner.
+   *
+   * @return String : AppointmentBook owner.
+   */
   public String getOwnerName() {
     return (this.owner);
   }
 
   /**
-   * Returns the appointmentBook (Arraylist[] for Appointments
+   * Returns the appointmentBook (Arraylist[] of Appointments)
    *
-   * @return apptBook (Arraylist[] for Appointments
+   * @return apptBook : (Arraylist[] of Appointments)
    */
-  @Override
   public Collection<Appointment> getAppointments() {
-
     return apptBook;
   }
 
   /**
    * Adds an appointment to the appointment book
    *
-   * @param  appt  appointment to add
+   * @param appt : appointment to add
    */
-  @Override
   public void addAppointment(Appointment appt) {
     apptBook.add(appt);
-//    System.out.println("Now there are "+apptBook.size()+" appointments");
   }
 
-  @Override
+  /**
+   * Method to return owner and size of AppointmentBook
+   *
+   * @return String : owner and size of AppointmentBook
+   */
   public String toString() {
     return this.getOwnerName() + "\'s appointment book with " + this.getAppointments().size() + " appointments";
   }

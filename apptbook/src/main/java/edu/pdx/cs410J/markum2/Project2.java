@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * The main class for the CS410J appointment book Project 2.
  *
- * @author Markus Mattwandel
+ * @author  Markus Mattwandel
  * @version 2016.07.13
  */
 public class Project2 {
@@ -19,8 +19,8 @@ public class Project2 {
   /**
    * Validates that date contains 1 or 2 digits for day and month, and 4 digits for year
    *
-   * @param  dateString string to validate
-   * @return boolean    string adheres to required format
+   * @param  dateString : string to validate
+   * @return boolean    : string adheres to required format
    */
   private static boolean validDate(String dateString) {
     return (dateString.matches("([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})"));
@@ -50,6 +50,8 @@ public class Project2 {
     System.out.println("  -textFile file\t file name from which to read/write the appointment book");
     System.out.println("  -README\t\t to print this message");
     System.out.println("Options can be specified in any order but must precede appointment information.\n");
+    System.out.println("File format is CSV, with every field, separated by a comma.  For example:");
+    System.out.println("  Markus, \"Lunch with Boss\", 7/13/2016, 12:00, 7/13/2016, 13:00\n");
     System.out.println("Appointments must adhere to the following format in the order indicated:");
     System.out.println("  owner:\t\t the owner of the appointment book");
     System.out.println("  description:\t\t the description of the appointment");
@@ -64,9 +66,9 @@ public class Project2 {
   }
 
   /**
-   * main for program.  Parses command line, processes options, and if arguments are valid,
-   * creates appointment, adds it to appointment book, and prints the new appointmnet if
-   * specified
+   * main for Project 2.  Parses command line, processes options, reads in and checks appointments from
+   * textFile if specified, and if arguments are valid creates appointment, adds it to appointment book,
+   * and prints the new appointment if specified.
    *
    * @param     args   command line arguments
    */
@@ -139,7 +141,7 @@ public class Project2 {
     String endDate = args[args.length-2];
     String endTime = args[args.length-1];
 
-    // Check beginning as well as end date and time formats and exit if any are not valid
+    // Check beginning as well as end date and time formats.  Exit if any are not valid
     if (!validDate(beginDate)) { System.out.println("Bad beginDate format."); System.exit(1); }
     if (!validTime(beginTime)) { System.out.println("Bad beginTime format."); System.exit(1); }
     if (!validDate(endDate))   { System.out.println("Bad endDate format.");   System.exit(1); }
@@ -147,7 +149,7 @@ public class Project2 {
 
     // cmdLine good: start processing!
 
-    // if -textFile then read them from file and add to AppointmentBook
+    // if -textFile specified, read appointments from file and add them to AppointmentBook
     if (textFileOption) {
       try {
         TextParser parser = new TextParser(textFileName,owner);
@@ -162,13 +164,13 @@ public class Project2 {
       }
     }
 
-    // Construct new Appointment from cmdLine
+    // Construct new Appointment from cmdLine args
     Appointment newAppointment = new Appointment(owner, description, beginDate+" "+beginTime, endDate+" "+endTime);
 
     // Add new Appointment to AppointmentBook
     newAppointmentBook.addAppointment(newAppointment);
 
-    // if -textFile, write all appointments back out
+    // if -textFile specified, write all appointments back out
     try {
       TextDumper dumper = new TextDumper(textFileName);
       dumper.dump(newAppointmentBook);
@@ -178,7 +180,7 @@ public class Project2 {
       System.exit(1);
     }
 
-    // if -print specified, print new appointment
+    // if -print specified, print out new appointment
     if (printOption) System.out.println("Added to "+textFileName+": "+newAppointment.getDescription());
 
     // if you've made it this far, exit with Success
