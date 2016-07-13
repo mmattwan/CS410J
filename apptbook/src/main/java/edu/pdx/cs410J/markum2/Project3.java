@@ -20,26 +20,6 @@ public class Project3 {
   public static AppointmentBook newAppointmentBook = new AppointmentBook();
 
   /**
-   * Validates that date contains 1 or 2 digits for day and month, and 4 digits for year
-   *
-   * @param  dateString : string to validate
-   * @return boolean    : string adheres to required format
-   */
-  private static boolean validDate(String dateString) {
-    return (dateString.matches("([0-9]{1,2})/([0-9]{1,2})/([0-9]{4})"));
-  }
-
-  /**
-   * Validates that time contains 1 or 2 digits for hour and 2 digits for minutes
-   *
-   * @param  timeString string to validate
-   * @return boolean    string adheres to required format
-   */
-  private static boolean validTime(String timeString) {
-    return (timeString.matches("([0-9]{1,2}):([0-9]{2})"));
-  }
-
-  /**
    * Prints README
    */
   private static void printReadme() {
@@ -55,7 +35,7 @@ public class Project3 {
     System.out.println("  -README\t\t to print this message");
     System.out.println("Options can be specified in any order but must precede appointment information.\n");
     System.out.println("tileFile format is CSV, with every field separated by a comma.  For example:");
-    System.out.println("  Markus, \"Lunch with Boss\", 7/13/2016 11:00 am, 7/13/2016 1:00 pk\n");
+    System.out.println("  Markus, \"Lunch with Boss\", 7/13/2016 11:00 am, 7/13/2016 1:00 pm\n");
     System.out.println("Appointments must adhere to the following format in the order indicated:");
     System.out.println("  owner:\t\t the owner of the appointment book");
     System.out.println("  description:\t\t the description of the appointment");
@@ -176,22 +156,20 @@ public class Project3 {
     // cmdLine good: start processing!
 
     // convert to Date class
-    Date beginDateTime = null;
-    int f = DateFormat.SHORT;
-    DateFormat df = DateFormat.getDateTimeInstance(f,f);
+    Date beginDateTime = null, endDateTime = null ;
+    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
     try {
       beginDateTime = df.parse(beginDate+" "+beginTime+" "+beginTimeMeridiem);
     }
     catch (ParseException ex) {
-      System.err.println("** Bad Date: "+beginDate+" "+beginTime+" "+beginTimeMeridiem);
+      System.err.println("Bad beginning Date and time: "+beginDate+" "+beginTime+" "+beginTimeMeridiem);
       System.exit(1);
     }
-    Date endDateTime = null;
     try {
       endDateTime = df.parse(endDate+" "+endTime+" "+endTimeMeridiem);
     }
     catch (ParseException ex) {
-      System.err.println("** Bad Date: "+endDate+" "+endTime+" "+endTimeMeridiem);
+      System.err.println("Bad ending date and time: "+endDate+" "+endTime+" "+endTimeMeridiem);
       System.exit(1);
     }
 
