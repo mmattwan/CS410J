@@ -2,6 +2,10 @@ package edu.pdx.cs410J.markum2;
 
 import edu.pdx.cs410J.AbstractAppointment;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+
 /**
  * Class that defines an appointment.
  *
@@ -12,30 +16,42 @@ public class Appointment extends AbstractAppointment {
 
   private String owner;       // owner of the appointment
   private String description; // description of the appointment
-  private String beginTime;   // begin time and date
-  private String endTime;     // end time and date
+  private Date beginDateTime;   // begin time and date
+  private Date endDateTime;     // end time and date
 
   /**
    *  Constructs an appointment
    *
-   *  @param owner       : owner of the appointment
-   *  @param description : description of the appointment
-   *  @param beginTime   : begin time and date
-   *  @param endTime     : end time and date
+   *  @param owner           : owner of the appointment
+   *  @param description     : description of the appointment
+   *  @param beginDateTime   : begin time and date
+   *  @param endDateTime     : end time and date
    */
-  public Appointment(String owner, String description, String beginTime, String endTime) {
+  public Appointment(String owner, String description, Date beginDateTime, Date endDateTime) {
     this.owner = owner;
     this.description = description;
-    this.beginTime = beginTime;
-    this.endTime = endTime;
+    this.beginDateTime = beginDateTime;
+    this.endDateTime = endDateTime;
   }
 
-  public String getBeginTimeString() { // Ignore for Project 1
-      throw new UnsupportedOperationException("This method is not implemented yet");
+  public String getBeginTimeString() {
+
+    int f = DateFormat.SHORT;
+    DateFormat df = DateFormat.getDateTimeInstance(f,f);
+
+    String s = df.format(this.beginDateTime);
+    return(s);
+
   }
 
-  public String getEndTimeString() {  // Ignore for Project 1
-    throw new UnsupportedOperationException("This method is not implemented yet");
+  public String getEndTimeString() {
+
+    int f = DateFormat.SHORT;
+    DateFormat df = DateFormat.getDateTimeInstance(f,f);
+
+    String s = df.format(this.endDateTime);
+    return(s);
+
   }
 
   /**
@@ -44,6 +60,6 @@ public class Appointment extends AbstractAppointment {
    * @return string : containing appointment information
    */
   public String getDescription() {
-    return(this.owner+", "+this.description+", "+this.beginTime+", "+this.endTime);
+    return(this.owner+", "+this.description+", "+this.beginDateTime+", "+this.endDateTime);
   }
 }

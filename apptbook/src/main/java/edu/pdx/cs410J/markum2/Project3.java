@@ -4,6 +4,9 @@ import edu.pdx.cs410J.ParserException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * The main class for the CS410J appointment book Project 2.
@@ -51,15 +54,13 @@ public class Project3 {
     System.out.println("  -pretty file\t\t file to pretty print appointment book to (- for stdout)");
     System.out.println("  -README\t\t to print this message");
     System.out.println("Options can be specified in any order but must precede appointment information.\n");
-    System.out.println("File format is CSV, with every field, separated by a comma.  For example:");
-    System.out.println("  Markus, \"Lunch with Boss\", 7/13/2016, 12:00, 7/13/2016, 13:00\n");
+    System.out.println("tileFile format is CSV, with every field separated by a comma.  For example:");
+    System.out.println("  Markus, \"Lunch with Boss\", 7/13/2016 11:00 am, 7/13/2016 1:00 pk\n");
     System.out.println("Appointments must adhere to the following format in the order indicated:");
     System.out.println("  owner:\t\t the owner of the appointment book");
     System.out.println("  description:\t\t the description of the appointment");
-    System.out.println("  beginDate:\t\t the appointment\'s beginning date");
-    System.out.println("  beginTime:\t\t the appointment's beginning time");
-    System.out.println("  endDate:\t\t the appointment's ending date");
-    System.out.println("  endTime:\t\t the appointment's ending time\n");
+    System.out.println("  beginDateTime:\t the beginning date and meridiem time (separated by a blank)");
+    System.out.println("  beginTimeTime:\t the ending date and meridiem time (separated by a blank)");
     System.out.println("Time can have 1 or 2 digits for hour, but must have 2 digits for minutes.");
     System.out.println("Date can have 1 or 2 digits for month and day, but must have 4 digits for year.");
     System.out.println("owner and description can use double quotes to span multiple words.\n");
@@ -156,27 +157,43 @@ public class Project3 {
     // print README and exit if -README found
     if (readmeOption) { printReadme(); System.exit(0); }
 
-    // it takes exactly 6 args to specify an appointment: add that to optCnt to verify and exit it wrong amount
-    if (optCnt+6 != args.length) {
+    // it takes exactly 8 args to specify an appointment: add that to optCnt to verify and exit it wrong amount
+    if (optCnt+8 != args.length) {
       System.err.println("Invalid #arguments to create appointment");
       System.exit(1);
     }
 
     // Extract new appointment details from args
-    String owner =  args[args.length-6];
-    String description = args[args.length-5];
-    String beginDate = args[args.length-4];
-    String beginTime = args[args.length-3];
-    String endDate = args[args.length-2];
-    String endTime = args[args.length-1];
-
-    // Check beginning as well as end date and time formats.  Exit if any are not valid
-    if (!validDate(beginDate)) { System.out.println("Bad beginDate format."); System.exit(1); }
-    if (!validTime(beginTime)) { System.out.println("Bad beginTime format."); System.exit(1); }
-    if (!validDate(endDate))   { System.out.println("Bad endDate format.");   System.exit(1); }
-    if (!validTime(endTime))   { System.out.println("Bad endTime format.");   System.exit(1); }
+    String owner =  args[args.length-8];
+    String description = args[args.length-7];
+    String beginDate = args[args.length-6];
+    String beginTime = args[args.length-5];
+    String beginTimeMeridiem = args[args.length-4];
+    String endDate = args[args.length-3];
+    String endTime = args[args.length-2];
+    String endTimeMeridiem = args[args.length-1];
 
     // cmdLine good: start processing!
+
+    // convert to Date class
+    Date beginDateTime = null;
+    int f = DateFormat.SHORT;
+    DateFormat df = DateFormat.getDateTimeInstance(f,f);
+    try {
+      beginDateTime = df.parse(beginDate+" "+beginTime+" "+beginTimeMeridiem);
+    }
+    catch (ParseException ex) {
+      System.err.println("** Bad Date: "+beginDate+" "+beginTime+" "+beginTimeMeridiem);
+      System.exit(1);
+    }
+    Date endDateTime = null;
+    try {
+      endDateTime = df.parse(endDate+" "+endTime+" "+endTimeMeridiem);
+    }
+    catch (ParseException ex) {
+      System.err.println("** Bad Date: "+endDate+" "+endTime+" "+endTimeMeridiem);
+      System.exit(1);
+    }
 
     // if -textFile specified, read appointments from file and add them to AppointmentBook
     if (textFileOption) {
@@ -194,7 +211,7 @@ public class Project3 {
     }
 
     // Construct new Appointment from cmdLine args
-    Appointment newAppointment = new Appointment(owner, description, beginDate+" "+beginTime, endDate+" "+endTime);
+    Appointment newAppointment = new Appointment(owner, description, beginDateTime, endDateTime);
 
     // Add new Appointment to AppointmentBook
     newAppointmentBook.addAppointment(newAppointment);

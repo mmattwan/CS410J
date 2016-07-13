@@ -4,8 +4,11 @@ import edu.pdx.cs410J.AppointmentBookParser;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 
-import static edu.pdx.cs410J.markum2.Project2.newAppointmentBook;
+import static edu.pdx.cs410J.markum2.Project3.newAppointmentBook;
 
 /**
  * Class that parses the contents of a text file and from it creates an AppointmentBook
@@ -74,22 +77,41 @@ class TextParser implements AppointmentBookParser {
         // Deconstruct .CSV lines
         String[] parts = line.split(",");
 
-        // Make sure there are 6 elements
-        if (parts.length != 6) error("Malformed input file.");
+        // Make sure there are 4 elements
+        if (parts.length != 4) error("Malformed input file.");
 
         // Parse out fields
         String readOwner = parts[0].trim();
         String description = parts[1].trim();
-        String beginDate = parts[2].trim();
-        String beginTime = parts[3].trim();
-        String endDate = parts[4].trim();
-        String endTime = parts[5].trim();
+        String beginDateTime = parts[2].trim();
+        String endDateTime = parts[3].trim();
+
+        // convert to Date class
+        Date beginDateTimeDate = null;
+        int f = DateFormat.SHORT;
+        DateFormat df = DateFormat.getDateTimeInstance(f,f);
+        try {
+          beginDateTimeDate = df.parse(beginDateTime);
+        }
+        catch (ParseException ex) {
+          System.err.println("** Bad Date: "+beginDateTime);
+          System.exit(1);
+        }
+
+        Date endDateTimeDate = null;
+        try {
+          endDateTimeDate = df.parse(endDateTime);
+        }
+        catch (ParseException ex) {
+          System.err.println("** Bad Date: "+endDateTime);
+          System.exit(1);
+        }
 
         // Make sure owner matches
         if (!readOwner.equals(owner)) error("Wrong Owner.");
 
         // Construct new Appointment
-        Appointment newAppointment = new Appointment(owner, description, beginDate + " " + beginTime, endDate + " " + endTime);
+        Appointment newAppointment = new Appointment(owner, description, beginDateTimeDate, endDateTimeDate);
 
         // Add new Appointment to the AppointmentBook
         newAppointmentBook.addAppointment(newAppointment);

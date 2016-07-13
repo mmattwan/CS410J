@@ -56,21 +56,12 @@ class TextDumper implements AppointmentBookDumper {
         // extract next appointment from appointmentBoob
         appt = nonAbstractAppointmentBook.apptBook.get(i);
 
-        // Deconstruct the last 2 fields
         String[] apptParts = appt.getDescription().split(",");
-
-        // Deconstruct next to the last field into beginning date and time
-        String beginDateTime = apptParts[2].trim();
-        String[] beginDateTimeParts = beginDateTime.split(" ");
-        String beginDate = beginDateTimeParts[0]; String beginTime = beginDateTimeParts[1];
-
-        // Deconstruct last field into ending date and time
-        String endDateTime = apptParts[3].trim();
-        String[] endDateTimeParts = endDateTime.split(" ");
-        String endDate = endDateTimeParts[0]; String endTime = endDateTimeParts[1];
+        String beginDateTime = appt.getBeginTimeString();
+        String endDateTime = appt.getEndTimeString();
 
         // Build string to write in order to optimize write performance
-        String s = apptParts[0]+","+apptParts[1]+", "+beginDate+", "+beginTime+", "+endDate+", "+endTime+"\n";
+        String s = apptParts[0]+","+apptParts[1]+", "+beginDateTime+", "+endDateTime+"\n";
 
         // Write and flush appointment information using CSV format to output file
         pw.append(s);
