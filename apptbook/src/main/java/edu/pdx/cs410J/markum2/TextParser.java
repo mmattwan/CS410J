@@ -87,9 +87,8 @@ class TextParser implements AppointmentBookParser {
         String endDateTime = parts[3].trim();
 
         // convert to Date class
-        Date beginDateTimeDate = null;
-        int f = DateFormat.SHORT;
-        DateFormat df = DateFormat.getDateTimeInstance(f,f);
+        Date beginDateTimeDate = null, endDateTimeDate = null;;
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
         try {
           beginDateTimeDate = df.parse(beginDateTime);
         }
@@ -97,8 +96,6 @@ class TextParser implements AppointmentBookParser {
           System.err.println("** Bad Date: "+beginDateTime);
           System.exit(1);
         }
-
-        Date endDateTimeDate = null;
         try {
           endDateTimeDate = df.parse(endDateTime);
         }
