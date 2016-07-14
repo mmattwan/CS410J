@@ -62,6 +62,13 @@ public class Appointment extends AbstractAppointment {
     return(this.description);
   }
 
+  public Date getBeginDateTime() {
+    return(this.beginDateTime);
+  }
+
+  public Date getEndDateTime() {
+    return(this.endDateTime);
+  }
   /**
    * Returns an appointment in a string
    *

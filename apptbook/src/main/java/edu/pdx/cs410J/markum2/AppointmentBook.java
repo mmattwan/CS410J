@@ -14,8 +14,6 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
   private String owner; // owner of the appointment book
 
-//  public ArrayList<Appointment> apptBook = new ArrayList<>();  // list of appointments
-
   public TreeSet<Appointment> apptBook = new TreeSet<>(new AppointmentComparator());  // sorted list of appointments
 
   /**
