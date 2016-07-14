@@ -206,8 +206,15 @@ public class Project3 {
     }
 
     // if -prettyPrint specified, print out new appointment
-    if (prettyFileOption)
-      System.out.println("Need to prettyprint to file: "+prettyFileName);
+    if (prettyFileOption) {
+      try {
+        TextDumper dumper = new TextDumper(prettyFileName);
+        dumper.prettyPrint(newAppointmentBook);
+      } catch (IOException ex) {
+        System.err.println("** " + ex.getMessage());
+        System.exit(1);
+      }
+    }
 
     // if -print specified, print out new appointment
     if (printOption)
