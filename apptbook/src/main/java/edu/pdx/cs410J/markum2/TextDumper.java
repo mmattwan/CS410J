@@ -38,14 +38,14 @@ class TextDumper implements AppointmentBookDumper {
 
   /**
    * Method that dumps the contents of AppointmentBook to specified textfile, passing any IOExecptions
-   * back to calling routine
+   * back to calling routine.
    *
    * @param passedAbstractAppointmentBook : the AppointmentBook to dump
    * @throws IOException            : errors associated with file writes
    */
   public void dump(AbstractAppointmentBook passedAbstractAppointmentBook) throws IOException {
 
-    // Cast abstractAppointmentBook to concrete AppointmentBook in order to access elemente
+    // Cast abstractAppointmentBook to concrete AppointmentBook in order to access elements
     AppointmentBook nonAbstractAppointmentBook = (AppointmentBook) passedAbstractAppointmentBook;
 
     // Set up AppointmentBook iterator
@@ -66,7 +66,7 @@ class TextDumper implements AppointmentBookDumper {
         String beginDateTime = ac.getBeginTimeString();
         String endDateTime = ac.getEndTimeString();
 
-        // Build string to write in order to optimize write performance
+        // Build string to write
         String s = apptParts[0] + "," + apptParts[1] + ", " + beginDateTime + ", " + endDateTime + "\n";
 
         // Write and flush appointment information using CSV format to output file
@@ -83,14 +83,13 @@ class TextDumper implements AppointmentBookDumper {
   }
 
   /**
-   * Method that nicely prints the AppointmentBook to a the specified textfile or to the screen if
-   * "-" specified as file passing any IOExecption
+   * Method that nicely prints the AppointmentBook to specified textfile or to the screen if
+   * "-" is specified as textfile, passing any IOExecption
    * back to calling routine
    *
    * @param  passedAbstractAppointmentBook : the AppointmentBook to dump
    * @throws IOException                   : errors associated with file writes
    */
-
   public void prettyPrint(AbstractAppointmentBook passedAbstractAppointmentBook,
                           String fileName) throws IOException {
 
@@ -100,7 +99,7 @@ class TextDumper implements AppointmentBookDumper {
     // Set up AppointmentBook iterator
     Iterator iterator = nonAbstractAppointmentBook.apptBook.iterator();
 
-    boolean firstLine = true;     // signals first line
+    boolean firstLine = true;     // signals first line, e.g. print header
     String dateJustPrinted = "";  // contains last date printed
     String s;                     // string to print to file or screen
 
@@ -121,7 +120,7 @@ class TextDumper implements AppointmentBookDumper {
         String endDateTimeStr = ac.getEndTimeString();
         String descriptionStr = apptParts[1];
 
-        // Grab appointment begin and end dates to calculate length
+        // Grab appointment begin and end Dates to calculate length
         Date beginDateTimeDate = ac.getBeginDateTime();
         Date endDateTimeDate = ac.getEndDateTime();
         long minutesSpan = (endDateTimeDate.getTime()-beginDateTimeDate.getTime()) / 1000 / 60;
@@ -134,23 +133,25 @@ class TextDumper implements AppointmentBookDumper {
           if (fileName.equals("-")) System.out.print(s);
           else pw.append(s);
 
-          // underline it
+          // underline header
           String s2 = "";
           for (int i=2; i<s.length(); i++) s2 += "-";
           s2 += "\n";
           if (fileName.equals("-")) System.out.print(s2);
           else pw.append(s2);
+
+          // signal header printed
           firstLine = false;
         }
 
-        // extract DateTime parts
+        // extract DateTime parts as strings
         String[] beginDateTimeParts = beginDateTimeStr.split(" ");
         String beginDateStr = beginDateTimeParts[0];
         String beginTimeStr = beginDateTimeParts[1]+" "+beginDateTimeParts[2];
         String[] endDateTimeParts = endDateTimeStr.split(" ");
         String endTimeStr = endDateTimeParts[1]+" "+endDateTimeParts[2];
 
-        // if new StartDate, print the date
+        // if new StartDate, print the date and preceded by a blank line for visual grouping
         if (!dateJustPrinted.equals(beginDateStr)) {
           s = "\nOn "+beginDateStr+":\n";
           if (fileName.equals("-")) System.out.print(s);
@@ -164,6 +165,8 @@ class TextDumper implements AppointmentBookDumper {
         else pw.append(s);
 
       }
+
+      // visually differentiate AppointmentBook from other output
       s="\n\n";
       if (fileName.equals("-")) System.out.print(s);
       else pw.append(s);
@@ -176,4 +179,3 @@ class TextDumper implements AppointmentBookDumper {
     }
   }
 }
-

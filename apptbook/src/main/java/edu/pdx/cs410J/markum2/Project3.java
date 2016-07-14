@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 /**
- * The main class for the CS410J appointment book Project 2.
+ * The main class for the CS410J appointment book Project 3.
  *
  * @author  Markus Mattwandel
  * @version 2016.07.20
@@ -96,7 +96,7 @@ public class Project3 {
 
             // Set textFile option and save textFile name
             textFileOption = Boolean.TRUE;
-            optCnt++;  // textFileName is also an option!
+            optCnt++;  // textFileName is also an option to count!
             textFileName = args[i + 1];
             break;
 
@@ -113,17 +113,19 @@ public class Project3 {
               prettyFileName = args[i + 1];
               i++;  // skip "-"
             }
-            // "-anuthingElse" is an error
+            // "-anythingElse" is an error
             else if (args[i + 1].substring(0, 2).contains("-")) {
               System.err.println("No fileName specified after -pretty");
               System.exit(1);
             }
-            // Set prettyFile option and save textFile name
+
+            // Grab prettyFile name
             else
               prettyFileName = args[i + 1];
 
+            // Set prettyFile option
             prettyFileOption = Boolean.TRUE;
-            optCnt++;  // prettyFileName is also an option!
+            optCnt++;  // prettyFileName is also an option to count!
             break;
 
           // Exit if option is invalid
@@ -137,7 +139,8 @@ public class Project3 {
     // print README and exit if -README found
     if (readmeOption) { printReadme(); System.exit(0); }
 
-    // it takes exactly 8 args to specify an appointment: add that to optCnt to verify and exit it wrong amount
+    // it takes exactly 8 args after the options to specify an appointment:
+    // add that to optCnt to verify and exit it wrong amount
     if (optCnt+8 != args.length) {
       System.err.println("Invalid #arguments to create appointment");
       System.exit(1);
@@ -155,7 +158,7 @@ public class Project3 {
 
     // cmdLine good: start processing!
 
-    // convert to Date class
+    // convert command line dates to Date class, flagging and exiting on bad dates
     Date beginDateTime = null, endDateTime = null ;
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
     try {
@@ -180,18 +183,17 @@ public class Project3 {
         AppointmentBook book = parser.parse();
       }
       catch (FileNotFoundException ex) {
-//      Catch exception, but do nothing which creates an empty file as specified
+      // catch exception, but do nothing which creates an empty file as specified
       }
+      // catch parser exceptions and exit if true
       catch (ParserException ex) {
         System.err.println("** " + ex.getMessage());
         System.exit(1);
       }
     }
 
-    // Construct new Appointment from cmdLine args
+    // Construct new Appointment from cmdLine args and add it to AppointmentBook
     Appointment newAppointment = new Appointment(owner, description, beginDateTime, endDateTime);
-
-    // Add new Appointment to AppointmentBook
     newAppointmentBook.addAppointment(newAppointment);
 
     // if -textFile specified, write all appointments back out
@@ -205,7 +207,7 @@ public class Project3 {
       }
     }
 
-    // if -prettyPrint specified, print out new appointment
+    // if -prettyPrint specified, print out AppointmentBook in pretty format
     if (prettyFileOption) {
       try {
         TextDumper dumper = new TextDumper(prettyFileName);
@@ -216,7 +218,7 @@ public class Project3 {
       }
     }
 
-    // if -print specified, print out new appointment
+    // if -print specified, print out cmdLine appointment added
     if (printOption)
       if (textFileOption) System.out.println("Added to "+textFileName+": "+newAppointment.toString());
       else System.out.println("Read: "+newAppointment.toString());

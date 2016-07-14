@@ -15,8 +15,8 @@ public class Appointment extends AbstractAppointment {
 
   private String owner;       // owner of the appointment
   private String description; // description of the appointment
-  private Date beginDateTime; // begin time and date
-  private Date endDateTime;   // end time and date
+  private Date beginDateTime; // begin date and time
+  private Date endDateTime;   // end date and time
 
   /**
    *  Constructs an appointment
@@ -40,13 +40,15 @@ public class Appointment extends AbstractAppointment {
    */
   public String getBeginTimeString() {
 
+    // define and format date
     int f = DateFormat.SHORT;
     DateFormat df = DateFormat.getDateTimeInstance(f,f);
 
-    String s = df.format(this.beginDateTime);
-    return(s);
+    // return the string
+    return(df.format(this.beginDateTime));
 
   }
+
   /**
    * Returns appointment ending Date and Time in SHORT Date format as a string.
    *
@@ -54,11 +56,12 @@ public class Appointment extends AbstractAppointment {
    */
   public String getEndTimeString() {
 
+    // define and format date
     int f = DateFormat.SHORT;
     DateFormat df = DateFormat.getDateTimeInstance(f,f);
 
-    String s = df.format(this.endDateTime);
-    return(s);
+    // return the string
+    return(df.format(this.endDateTime));
 
   }
 
@@ -90,7 +93,7 @@ public class Appointment extends AbstractAppointment {
   }
 
   /**
-   * Returns the appointment as a string
+   * Returns the all appointment information as a string
    *
    * @return string : containing appointment information
    */

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
+// import static edu.pdx.cs410J.markum2.Project3.newAppointmemt;
 import static edu.pdx.cs410J.markum2.Project3.newAppointmentBook;
 
 /**
@@ -86,8 +87,8 @@ class TextParser implements AppointmentBookParser {
         String beginDateTime = parts[2].trim();
         String endDateTime = parts[3].trim();
 
-        // convert to Date class
-        Date beginDateTimeDate = null, endDateTimeDate = null;;
+        // convert to Date class for begin and end dateTimes
+        Date beginDateTimeDate = null, endDateTimeDate = null;
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
         try {
           beginDateTimeDate = df.parse(beginDateTime);

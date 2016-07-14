@@ -5,7 +5,7 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 import java.util.*;
 
 /**
- * Class that defines an appointment book
+ * Class that defines an appointment book using TreeSet, which allows ordering at when adding.
  *
  * @author Markus Mattwandel
  * @version 2016.06.30
@@ -23,7 +23,6 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
   }
 
   /**
-   *
    * Method to return AppointmentBook owner.
    *
    * @return String : AppointmentBook owner.
@@ -33,16 +32,16 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
   }
 
   /**
-   * Returns the appointmentBook (Arraylist[] of Appointments)
+   * Method to return appointmentBook
    *
-   * @return apptBook : (Arraylist[] of Appointments)
+   * @return apptBook : TreeSet of Appointments)
    */
   public Collection<Appointment> getAppointments() {
     return apptBook;
   }
 
   /**
-   * Adds an appointment to the appointment book
+   * Method to add an appointment to the appointment book
    *
    * @param appt : appointment to add
    */
