@@ -40,7 +40,7 @@ class TextDumper implements AppointmentBookDumper {
    * Method that dumps the contents of AppointmentBook to specified textfile, passing any IOExecptions
    * back to calling routine
    *
-   * @param AbstractAppointmentBook : the AppointmentBook to dump
+   * @param passedAbstractAppointmentBook : the AppointmentBook to dump
    * @throws IOException            : errors associated with file writes
    */
   public void dump(AbstractAppointmentBook passedAbstractAppointmentBook) throws IOException {
@@ -56,7 +56,7 @@ class TextDumper implements AppointmentBookDumper {
       // iterate through all appointments in the appointmentBook
       while (iterator.hasNext()) {
 
-        Object a = iterator.next();       // next appointment extracted as Object
+        Object a = iterator.next();        // next appointment extracted as Object
         Appointment ac = (Appointment) a;  // cast Object to Appointment
 
         // Split appointment by CSV
@@ -87,11 +87,12 @@ class TextDumper implements AppointmentBookDumper {
    * "-" specified as file passing any IOExecption
    * back to calling routine
    *
-   * @param AbstractAppointmentBook : the AppointmentBook to dump
-   * @throws IOException            : errors associated with file writes
+   * @param  passedAbstractAppointmentBook : the AppointmentBook to dump
+   * @throws IOException                   : errors associated with file writes
    */
 
-  public void prettyPrint(AbstractAppointmentBook passedAbstractAppointmentBook) throws IOException {
+  public void prettyPrint(AbstractAppointmentBook passedAbstractAppointmentBook,
+                          String fileName) throws IOException {
 
     // Cast abstractAppointmentBook to concrete AppointmentBook in order to access elemente
     AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)passedAbstractAppointmentBook;
@@ -114,24 +115,31 @@ class TextDumper implements AppointmentBookDumper {
         // Split appointment by CSV
         String[] apptParts = a.toString().split(",");
 
-        // Convert Dates to strings
+        // Grab appointment strings
         String ownerStr = apptParts[0];
-        Date beginDateTimeDate = ac.getBeginDateTime();
         String beginDateTimeStr = ac.getBeginTimeString();
-        Date endDateTimeDate = ac.getEndDateTime();
         String endDateTimeStr = ac.getEndTimeString();
-        String dsscriptionStr = apptParts[1];
+        String descriptionStr = apptParts[1];
+
+        // Grab appointment begin and end dates to calculate length
+        Date beginDateTimeDate = ac.getBeginDateTime();
+        Date endDateTimeDate = ac.getEndDateTime();
         long minutesSpan = (endDateTimeDate.getTime()-beginDateTimeDate.getTime()) / 1000 / 60;
 
         // if first line print header
         if (firstLine) {
           Date date = new Date(); // current date and time
-          s = "\n\nAppointmentBook for "+ownerStr+ " as of "+date.toString()+":";
-          System.out.println(s);
+
+          s = "\n\nAppointmentBook for "+ownerStr+ " as of "+date.toString()+":\n";
+          if (fileName.equals("-")) System.out.print(s);
+          else pw.append(s);
+
           // underline it
           String s2 = "";
           for (int i=2; i<s.length(); i++) s2 += "-";
-          System.out.println(s2);
+          s2 += "\n";
+          if (fileName.equals("-")) System.out.print(s2);
+          else pw.append(s2);
           firstLine = false;
         }
 
@@ -140,35 +148,28 @@ class TextDumper implements AppointmentBookDumper {
         String beginDateStr = beginDateTimeParts[0];
         String beginTimeStr = beginDateTimeParts[1]+" "+beginDateTimeParts[2];
         String[] endDateTimeParts = endDateTimeStr.split(" ");
-        String endDateStr = endDateTimeParts[0];
         String endTimeStr = endDateTimeParts[1]+" "+endDateTimeParts[2];
 
         // if new StartDate, print the date
         if (!dateJustPrinted.equals(beginDateStr)) {
-          s = "\nOn "+beginDateStr+":";
-          System.out.println(s);
+          s = "\nOn "+beginDateStr+":\n";
+          if (fileName.equals("-")) System.out.print(s);
+          else pw.append(s);
         }
         dateJustPrinted = beginDateStr;
 
         // print appointment time and description information
-        s = beginTimeStr+" to "+endTimeStr+" ("+minutesSpan+" minutes):\t"+dsscriptionStr;
-        System.out.println(s);
+        s = beginTimeStr+" to "+endTimeStr+" ("+minutesSpan+" minutes):\t"+descriptionStr+"\n";
+        if (fileName.equals("-")) System.out.print(s);
+        else pw.append(s);
 
-        /*
-        // Build string to write in order to optimize write performance
-        String s = apptParts[0]+","+apptParts[1]+", "+beginDateTimeStr+", "+endDateTimeStr+"\n";
-
-        // Write and flush appointment information using CSV format to output file
-        pw.append(s);
-        pw.flush();
-*/
       }
-
       s="\n\n";
-      System.out.println(s);
+      if (fileName.equals("-")) System.out.print(s);
+      else pw.append(s);
 
-      // Close the output file
-      pw.close();
+      // Flush and Close the output file
+      if (!fileName.equals("-")) { pw.flush(); pw.close(); }
     }
     catch (Exception ex) {
       ex.printStackTrace();

@@ -209,7 +209,7 @@ public class Project3 {
     if (prettyFileOption) {
       try {
         TextDumper dumper = new TextDumper(prettyFileName);
-        dumper.prettyPrint(newAppointmentBook);
+        dumper.prettyPrint(newAppointmentBook, prettyFileName);
       } catch (IOException ex) {
         System.err.println("** " + ex.getMessage());
         System.exit(1);
