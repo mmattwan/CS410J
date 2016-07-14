@@ -211,8 +211,8 @@ public class Project3 {
 
     // if -print specified, print out new appointment
     if (printOption)
-      if (textFileOption) System.out.println("Added to "+textFileName+": "+newAppointment.getDescription());
-      else System.out.println("Read: "+newAppointment.getDescription());
+      if (textFileOption) System.out.println("Added to "+textFileName+": "+newAppointment.toString());
+      else System.out.println("Read: "+newAppointment.toString());
 
     // if you've made it this far, exit with Success
     System.exit(0);

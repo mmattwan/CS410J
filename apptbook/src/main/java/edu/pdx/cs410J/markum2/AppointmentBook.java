@@ -2,8 +2,7 @@ package edu.pdx.cs410J.markum2;
 
 import edu.pdx.cs410J.AbstractAppointmentBook;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Class that defines an appointment book
@@ -14,7 +13,10 @@ import java.util.Collection;
 public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
   private String owner; // owner of the appointment book
-  public ArrayList<Appointment> apptBook = new ArrayList<>();  // list of appointments
+
+//  public ArrayList<Appointment> apptBook = new ArrayList<>();  // list of appointments
+
+  public TreeSet<Appointment> apptBook = new TreeSet<>(new AppointmentComparator());  // sorted list of appointments
 
   /**
    * Constructs an empty appointment book.

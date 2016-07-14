@@ -3,7 +3,6 @@ package edu.pdx.cs410J.markum2;
 import edu.pdx.cs410J.AbstractAppointment;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -16,8 +15,8 @@ public class Appointment extends AbstractAppointment {
 
   private String owner;       // owner of the appointment
   private String description; // description of the appointment
-  private Date beginDateTime;   // begin time and date
-  private Date endDateTime;     // end time and date
+  private Date beginDateTime; // begin time and date
+  private Date endDateTime;   // end time and date
 
   /**
    *  Constructs an appointment
@@ -55,11 +54,21 @@ public class Appointment extends AbstractAppointment {
   }
 
   /**
+   * Returns appointment description.
+   *
+   * @return string : containing appointment's description
+   */
+  public String getDescription() {
+    return(this.description);
+  }
+
+  /**
    * Returns an appointment in a string
    *
    * @return string : containing appointment information
    */
-  public String getDescription() {
+  public String toString() {
     return(this.owner+", "+this.description+", "+this.beginDateTime+", "+this.endDateTime);
   }
+
 }

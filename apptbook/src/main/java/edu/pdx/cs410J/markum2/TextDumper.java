@@ -4,6 +4,8 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookDumper;
 
 import java.io.*;
+import java.util.Iterator;
+
 
 /**
  * Class that dumps the contents of AppointmentBook to specified textfile.
@@ -40,25 +42,28 @@ class TextDumper implements AppointmentBookDumper {
    * @param AbstractAppointmentBook : the AppointmentBook to dump
    * @throws IOException            : errors associated with file writes
    */
-  public void dump(AbstractAppointmentBook AbstractAppointmentBook) throws IOException {
+  public void dump(AbstractAppointmentBook passedAbstractAppointmentBook) throws IOException {
 
-    // Cast abtractAppointmentBook to concrete AppointmentBook in order to access elemente
-    AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)AbstractAppointmentBook;
+    // Cast abstractAppointmentBook to concrete AppointmentBook in order to access elemente
+    AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)passedAbstractAppointmentBook;
 
-    // Appointment to add to output file
-    Appointment appt;
+    // Set up AppointmentBook iterator
+    Iterator iterator = nonAbstractAppointmentBook.apptBook.iterator();
 
     try {
 
       // iterate through all appointments in the appointmentBook
-      for (int i = 0; i <= nonAbstractAppointmentBook.apptBook.size() - 1; i++) {
+      while (iterator.hasNext()) {
 
-        // extract next appointment from appointmentBoob
-        appt = nonAbstractAppointmentBook.apptBook.get(i);
+        Object a = iterator.next();       // next appointment extracted as Object
+        Appointment ac = (Appointment)a;  // cast Object to Appointment
 
-        String[] apptParts = appt.getDescription().split(",");
-        String beginDateTime = appt.getBeginTimeString();
-        String endDateTime = appt.getEndTimeString();
+        // Split appointment by CSV
+        String[] apptParts = a.toString().split(",");
+
+        // Convert Dates to strings
+        String beginDateTime = ac.getBeginTimeString();
+        String endDateTime = ac.getEndTimeString();
 
         // Build string to write in order to optimize write performance
         String s = apptParts[0]+","+apptParts[1]+", "+beginDateTime+", "+endDateTime+"\n";
@@ -70,10 +75,12 @@ class TextDumper implements AppointmentBookDumper {
 
       // Close the output file
       pw.close();
+
     }
     catch (Exception ex) {
       ex.printStackTrace();
     }
+
   }
 }
 
