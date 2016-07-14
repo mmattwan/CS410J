@@ -33,6 +33,11 @@ public class Appointment extends AbstractAppointment {
     this.endDateTime = endDateTime;
   }
 
+  /**
+   * Returns appointment beginning Date and Time in SHORT Date format as a string.
+   *
+   * @return string : containing appointment's beginDateTime in SHORT format
+   */
   public String getBeginTimeString() {
 
     int f = DateFormat.SHORT;
@@ -42,7 +47,11 @@ public class Appointment extends AbstractAppointment {
     return(s);
 
   }
-
+  /**
+   * Returns appointment ending Date and Time in SHORT Date format as a string.
+   *
+   * @return string : containing appointment's endDateTime in SHORT format
+   */
   public String getEndTimeString() {
 
     int f = DateFormat.SHORT;
@@ -62,20 +71,30 @@ public class Appointment extends AbstractAppointment {
     return(this.description);
   }
 
+  /**
+   * Returns appointment beginning Date and Time.
+   *
+   * @return string : containing appointment's beginDateTime
+   */
   public Date getBeginDateTime() {
     return(this.beginDateTime);
   }
 
+  /**
+   * Returns appointment ending Date and Time.
+   *
+   * @return string : containing appointment's endDateTime
+   */
   public Date getEndDateTime() {
     return(this.endDateTime);
   }
+
   /**
-   * Returns an appointment in a string
+   * Returns the appointment as a string
    *
    * @return string : containing appointment information
    */
   public String toString() {
     return(this.owner+", "+this.description+", "+this.beginDateTime+", "+this.endDateTime);
   }
-
 }
