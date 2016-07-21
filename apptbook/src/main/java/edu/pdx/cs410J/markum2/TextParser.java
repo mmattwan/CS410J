@@ -8,8 +8,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-// import static edu.pdx.cs410J.markum2.Project3.newAppointmemt;
-import static edu.pdx.cs410J.markum2.Project3.newAppointmentBook;
+//import static AppointmentBookServlet.newAppointmentBook;
+
+//import edu.pdx.cs410J.newAppointmentBook;
 
 /**
  * Class that parses the contents of a text file and from it creates an AppointmentBook
@@ -112,7 +113,7 @@ class TextParser implements AppointmentBookParser {
         Appointment newAppointment = new Appointment(owner, description, beginDateTimeDate, endDateTimeDate);
 
         // Add new Appointment to the AppointmentBook
-        newAppointmentBook.addAppointment(newAppointment);
+//        newAppointmentBook.addAppointment(newAppointment);
 
       }
     }

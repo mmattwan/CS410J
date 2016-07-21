@@ -75,6 +75,15 @@ public class Appointment extends AbstractAppointment {
   }
 
   /**
+   * Returns appointment owner.
+   *
+   * @return string : containing appointment's owner
+   */
+  public String getOwner() {
+    return(this.owner);
+  }
+
+  /**
    * Returns appointment beginning Date and Time.
    *
    * @return string : containing appointment's beginDateTime

@@ -1,5 +1,7 @@
 package edu.pdx.cs410J.markum2;
 
+import java.io.PrintWriter;
+
 import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookDumper;
 
