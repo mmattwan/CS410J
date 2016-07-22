@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
 
 /**
  * This servlet ultimately provides a REST API for working with an
@@ -46,18 +49,17 @@ public class AppointmentBookServlet extends HttpServlet
     else
       System.out.print("\nIn doGet: bad QueryString\n");
 /*
-        PrintWriter pw = response.getWriter();
-        pw.println("Owner is "+owner);
-        pw.println(Messages.formatKeyValuePair(key, value));
-
-        pw.flush();
+    PrintWriter pw = response.getWriter();
+    pw.println("Owner is "+owner);
+    pw.println(Messages.formatKeyValuePair(key, owner));
+    pw.flush();
 */
     response.setContentType( "text/plain" );
-    String key = getParameter( "key", request );
+    String key = getParameter( "owner", request );
     if (key != null) {
       writeValue(key, response);
     } else {
-       writeAllMappings(response);
+      writeAllMappings(response);
     }
   }
 
@@ -70,30 +72,51 @@ public class AppointmentBookServlet extends HttpServlet
   protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
   {
 
+    // HTTP response to capture
     response.setContentType( "text/plain" );
 
+    // Appointment information passed via HTTP parameters
     String owner = getParameter( "owner", request );
     String description = getParameter( "description", request );
     String beginDateTimeStr = getParameter( "beginDateTimeStr", request );
     String endDateTimeStr = getParameter( "endDateTimeStr", request );
-
-    System.out.print("In doPost: ");
-    System.out.println("owner from getParameter = "+owner);
-    System.out.println("description from getParameter = "+description);
-    System.out.println("beginDateTimeStr from getParameter = "+beginDateTimeStr);
-    System.out.println("endDateTimeStr from getParameter = "+endDateTimeStr);
 /*
-        if (key == null) {
-            missingRequiredParameter(response, "key");
-            return;
-        }
+    System.out.println("In doPost: ");
+    System.out.println("\towner from getParameter = "+owner);
+    System.out.println("\tdescription from getParameter = "+description);
+    System.out.println("\tbeginDateTimeStr from getParameter = "+beginDateTimeStr);
+    System.out.println("\tendDateTimeStr from getParameter = "+endDateTimeStr);
+*/
+    // convert DateTimeStr's to Date format
+    Date beginDateTime = null, endDateTime = null ;
+    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+    try {
+      beginDateTime = df.parse(beginDateTimeStr);
+    } catch (ParseException ex) {
+      System.err.println("Bad beginning Date and time: "+beginDateTimeStr);
+      System.exit(1);
+    }
+    try {
+      endDateTime = df.parse(endDateTimeStr);
+    } catch (ParseException ex) {
+      System.err.println("Bad beginning Date and time: "+endDateTimeStr);
+      System.exit(1);
+    }
 
-        String value = getParameter( "value", request );
-        if ( value == null) {
-            missingRequiredParameter( response, "value" );
-            return;
-        }
+    // Construct new Appointment from cmdLine args and add it to AppointmentBook
+    Appointment newAppointment = new Appointment(owner, description, beginDateTime, endDateTime);
+    newAppointmentBook.addAppointment(newAppointment);
 
+    // PrettyPrint for debug
+    try {
+      TextDumper dumper = new TextDumper("-");
+      dumper.prettyPrint(newAppointmentBook, "-");
+    } catch (IOException ex) {
+      System.err.println("** " + ex.getMessage());
+      System.exit(1);
+    }
+
+    /*
         this.data.put(key, value);
 
         PrintWriter pw = response.getWriter();
@@ -146,6 +169,8 @@ public class AppointmentBookServlet extends HttpServlet
   {
     String value = this.data.get(key);
 
+    System.out.println("Hello from writeValue");
+
     PrintWriter pw = response.getWriter();
     pw.println(Messages.getMappingCount( value != null ? 1 : 0 ));
     pw.println(Messages.formatKeyValuePair(key, value));
@@ -163,6 +188,8 @@ public class AppointmentBookServlet extends HttpServlet
    */
   private void writeAllMappings( HttpServletResponse response ) throws IOException
   {
+    System.out.println("Hello from writeAllMappings");
+
     PrintWriter pw = response.getWriter();
     pw.println(Messages.getMappingCount(data.size()));
 

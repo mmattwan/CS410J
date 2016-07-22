@@ -15,11 +15,15 @@ import java.util.Date;
  */
 public class AppointmentBookRestClient extends HttpRequestHelper
 {
+  // App and Servlet
   private static final String WEB_APP = "apptbook";
   private static final String SERVLET = "appointments";
 
+  // The url to GET or POST to
   private final String url;
 
+  // The AppointmentBook the project will work on
+  public static edu.pdx.cs410J.markum2.AppointmentBook newAppointmentBook = new AppointmentBook();
 
   /**
    * Creates a client to the appointment book REST service running on the given host and port
