@@ -55,7 +55,12 @@ public class AppointmentBookRestClient extends HttpRequestHelper
 
   public Response addApptKeyValuePair( String owner, String description, String beginDateTimeStr, String endDateTimeStr) throws IOException
   {
-    return postToMyURL("key","owner","value",owner,"description",description,"beginDateTimeStr",beginDateTimeStr,"endDateTimeStr",endDateTimeStr);
+    return postToMyURL("key","owner","value",owner,"description",description,"beginTime",beginDateTimeStr,"endTime",endDateTimeStr);
+  }
+
+  public Response addApptSearchKeyValuePair( String owner, String beginDateTimeStr, String endDateTimeStr) throws IOException
+  {
+    return postToMyURL("key","owner","value",owner,"beginTime",beginDateTimeStr,"endTime",endDateTimeStr);
   }
 
   public Response addKeyValuePair( String key, String value ) throws IOException

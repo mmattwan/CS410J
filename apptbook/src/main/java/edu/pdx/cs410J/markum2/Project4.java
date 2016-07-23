@@ -58,8 +58,6 @@ public class Project4 {
     Boolean portOption = Boolean.FALSE;   // set if -port specified in cmdLine
     Integer portNumber=0;                 // port number
     Boolean searchOption = Boolean.FALSE; // set if -search specified in cmdLine
-    Date startSearchDate;                 // search start dateTime
-    Date endSearchDate;                   // search end dateTime
     Boolean printOption = Boolean.FALSE;  // set if -print specified in cmdLine
     Boolean readmeOption = Boolean.FALSE; // set if -README specified in cmdLine
     Integer optCnt = 0;                   // number of options found
@@ -132,7 +130,7 @@ public class Project4 {
             break;
 
           // Any other options are invalid and signal and
-            default:
+          default:
             System.err.println("Invalid option found: " + args[i]);
             System.exit(1);
           }
@@ -190,28 +188,30 @@ public class Project4 {
       System.exit(1);
     }
 
+    // Check whether beginDate < endDate, exit if not
+    if (! beginDateTime.before(endDateTime)) {
+      System.err.println("Appointment must begin before it ends.");
+      System.exit(1);
+    }
+
+
     // initialize HTTP response var
     HttpRequestHelper.Response response;
 
     // initialize RestClient
     AppointmentBookRestClient client = new AppointmentBookRestClient(hostName, portNumber, owner);
 
-    // either search for or add mew appointment
-    if (searchOption) {
-
-      // TODO Search for appointments within range and prettyPrint them
-
-    }
-
-    // add mew appointment
-    else
-      try {
+    // POST to url
+    try {
+      if (searchOption)
+        response = client.addApptSearchKeyValuePair(owner,beginDateTimeStr,endDateTimeStr);
+      else
         response = client.addApptKeyValuePair(owner,description,beginDateTimeStr,endDateTimeStr);
-        checkResponseCode( HttpURLConnection.HTTP_OK, response);
-      } catch ( IOException ex ) {
-        error("While contacting server: " + ex);
-        return;
-      }
+      checkResponseCode( HttpURLConnection.HTTP_OK, response);
+    } catch ( IOException ex ) {
+      error("While contacting server: " + ex);
+      return;
+    }
 
     // if -print specified, print new appt
     if (printOption && !searchOption)
