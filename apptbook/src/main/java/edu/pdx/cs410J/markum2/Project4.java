@@ -147,8 +147,8 @@ public class Project4 {
     }
 
     // it takes exactly 8 args after the options to specify an appointment
-    // or 7 args if -search is specified.
-    // Add that to optCnt to verify and exit if total amount is wrong.
+    // or 7 args to specify a -search.
+    // Add that amount to optCnt to verify and exit if total amount is wrong.
     if ( (optCnt+8 != args.length && !searchOption) ||
          (optCnt+7 != args.length && searchOption ) ) {
       System.err.println("Invalid number of appointment arguments");
@@ -194,7 +194,6 @@ public class Project4 {
       System.exit(1);
     }
 
-
     // initialize HTTP response var
     HttpRequestHelper.Response response;
 
@@ -233,7 +232,6 @@ public class Project4 {
                            response.getCode(), response.getContent()));
     }
   }
-
   private static void error( String message )
   {
     PrintStream err = System.err;

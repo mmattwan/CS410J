@@ -38,11 +38,10 @@ public class AppointmentBookServlet extends HttpServlet
   {
 
     PrintWriter pw = response.getWriter(); // write to URL
-    String option = null;
+    String option = null;                  // GET option
 
     // extract parameters
     String owner = getParameter( "owner", request );
-    String description = getParameter( "description", request );
     String beginDateTimeStr = getParameter( "beginTime", request );
     String endDateTimeStr = getParameter( "endTime", request );
 
@@ -62,20 +61,19 @@ public class AppointmentBookServlet extends HttpServlet
       return;
     }
 
-    System.out.println("In doGet: option = "+option);
-
     // Extract owner from apptbook
     String apptBookOwner = newAppointmentBook.getOwnerName();
-/*
+
+    // Make sure owner is that same as apptBook owner
+
     if (!apptBookOwner.equals(owner)) {
       pw.println("AppointmentBook owner "+apptBookOwner+" not the same as "+owner);
       pw.flush();
       return;
     }
-*/
-    Date beginDateTime=null, endDateTime=null;
 
     // if searching, convert begin and end dateTimes
+    Date beginDateTime=null, endDateTime=null;
     if (option.equals("searchRange")) {
 
       // convert DateTimeStr's to Date format
@@ -97,15 +95,15 @@ public class AppointmentBookServlet extends HttpServlet
     // PrettyPrint to URL based on option
     try {
       TextDumper dumper = new TextDumper();
-      if (option.equals("searchRange"))
+      if (option.equals("searchRange")) {
         dumper.prettyPrintRange(newAppointmentBook, pw, beginDateTime, endDateTime);
+      }
       else
         dumper.prettyPrint(newAppointmentBook, pw);
     } catch (IOException ex) {
       System.err.println("** " + ex.getMessage());
       System.exit(1);
     }
-
   }
 
   /**
@@ -116,6 +114,7 @@ public class AppointmentBookServlet extends HttpServlet
   @Override
   protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
   {
+    PrintWriter pw = response.getWriter(); // write to URL
 
     // HTTP response to capture
     response.setContentType( "text/plain" );
@@ -146,20 +145,31 @@ public class AppointmentBookServlet extends HttpServlet
     if (newAppointmentBook.getOwnerName() == null )
       newAppointmentBook.setOwnerName(owner);
 
-    // if not a search POST:
+    // Extract owner from apptbook
+    String apptBookOwner = newAppointmentBook.getOwnerName();
+
+    // Make sure owner is that same as apptBook owner
+    if (!apptBookOwner.equals(owner)) {
+      pw.println("AppointmentBook owner "+apptBookOwner+" not the same as "+owner);
+      pw.flush();
+      return;
+    }
+
+    // if not a search, add appt to apptBook
     if (description != null) {
 
-    // Construct new Appointment from cmdLine args and add it to AppointmentBook
+      // Construct new Appointment from cmdLine args and add it to AppointmentBook
       Appointment newAppointment = new Appointment(owner, description, beginDateTime, endDateTime);
 
-      // check owner is the same, if not exit
-/*    if (newAppointmentBook.getOwnerName() != owner) {
-        System.err.println("AppointmentBook owner "+newAppointmentBook.getOwnerName()+" not "+owner);
-        return;
-      }
-*/
       // add new appointment to appointmentBook
       newAppointmentBook.addAppointment(newAppointment);
+    }
+
+    // if a search, prettyPrint to console
+    else {
+      TextDumper dumper = new TextDumper();
+      PrintWriter cpw = new PrintWriter(System.out);
+      dumper.prettyPrintRange(newAppointmentBook, cpw, beginDateTime, endDateTime);
     }
 
   }

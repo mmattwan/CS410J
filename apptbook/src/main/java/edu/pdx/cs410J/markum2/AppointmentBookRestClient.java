@@ -27,11 +27,13 @@ public class AppointmentBookRestClient extends HttpRequestHelper
    * @param hostName The name of the host
    * @param port The port
    */
+
+  /*
   public AppointmentBookRestClient( String hostName, int port )
   {
     this.url = String.format( "http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET );
   }
-
+*/
   public AppointmentBookRestClient( String hostName, int port, String owner)
   {
     this.url = String.format( "http://%s:%d/%s/%s?%s", hostName, port, WEB_APP, SERVLET, "owner="+owner);

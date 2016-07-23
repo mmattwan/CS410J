@@ -255,7 +255,6 @@ class TextDumper {
 
       // Flush and Close the output file
       pw.flush();
-      pw.close();
     }
     catch (Exception ex) {
       ex.printStackTrace();
