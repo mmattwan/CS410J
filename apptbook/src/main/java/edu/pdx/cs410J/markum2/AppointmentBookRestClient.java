@@ -22,9 +22,6 @@ public class AppointmentBookRestClient extends HttpRequestHelper
   // The url to GET or POST to
   private final String url;
 
-  // The AppointmentBook the project will work on
-  public static edu.pdx.cs410J.markum2.AppointmentBook newAppointmentBook = new AppointmentBook();
-
   /**
    * Creates a client to the appointment book REST service running on the given host and port
    * @param hostName The name of the host
@@ -35,12 +32,12 @@ public class AppointmentBookRestClient extends HttpRequestHelper
     this.url = String.format( "http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET );
   }
 
-  public AppointmentBookRestClient( String hostName, int port, String args)
+  public AppointmentBookRestClient( String hostName, int port, String owner)
   {
-    this.url = String.format( "http://%s:%d/%s/%s?%s", hostName, port, WEB_APP, SERVLET, args);
+    this.url = String.format( "http://%s:%d/%s/%s?%s", hostName, port, WEB_APP, SERVLET, "owner="+owner);
   }
 
-      /**
+  /**
    * Returns all keys and values from the server
    */
   public Response getAllKeysAndValues() throws IOException

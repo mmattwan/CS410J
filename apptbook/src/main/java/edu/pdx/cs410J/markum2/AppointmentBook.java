@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
-  private String owner; // owner of the appointment book
+  public String owner; // owner of the appointment book
 
   public TreeSet<Appointment> apptBook = new TreeSet<>(new AppointmentComparator());  // sorted list of appointments
 
@@ -20,6 +20,15 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
    * Constructs an empty appointment book.
    */
   public AppointmentBook() {
+  }
+
+  /**
+   * Method to set AppointmentBook owner.
+   *
+   * @param String : AppointmentBook owner.
+   */
+  public void setOwnerName(String owner) {
+    this.owner = owner;
   }
 
   /**

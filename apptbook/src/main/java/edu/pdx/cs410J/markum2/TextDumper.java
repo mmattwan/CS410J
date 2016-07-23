@@ -18,9 +18,8 @@ import java.util.Iterator;
  * @author Markus Mattwandel
  * @version 2016.07.13
  */
-class TextDumper implements AppointmentBookDumper {
-
-  private PrintWriter pw;      // Dumping destination
+//class TextDumper implements AppointmentBookDumper {
+class TextDumper {
 
   /**
    * Constructors to write AppointmentBook to textfile.
@@ -28,14 +27,7 @@ class TextDumper implements AppointmentBookDumper {
    * @param fileName  : name of AppointmentBook file to write
    * @throws IOException
    */
-  public TextDumper(String fileName) throws IOException {
-    this(new File(fileName));
-  }
-  private TextDumper(File file) throws IOException {
-    this(new PrintWriter(new FileWriter(file), true));
-  }
-  private TextDumper(PrintWriter pw) {
-    this.pw = pw;
+  public TextDumper() {
   }
 
   /**
@@ -43,9 +35,9 @@ class TextDumper implements AppointmentBookDumper {
    * back to calling routine.
    *
    * @param passedAbstractAppointmentBook : the AppointmentBook to dump
-   * @throws IOException            : errors associated with file writes
+   * @throws IOException                  : errors associated with file writes
    */
-  public void dump(AbstractAppointmentBook passedAbstractAppointmentBook) throws IOException {
+  public void dump(AbstractAppointmentBook passedAbstractAppointmentBook, PrintWriter pw) throws IOException {
 
     // Cast abstractAppointmentBook to concrete AppointmentBook in order to access elements
     AppointmentBook nonAbstractAppointmentBook = (AppointmentBook) passedAbstractAppointmentBook;
@@ -85,15 +77,14 @@ class TextDumper implements AppointmentBookDumper {
   }
 
   /**
-   * Method that nicely prints the AppointmentBook to specified textfile or to the screen if
-   * "-" is specified as textfile, passing any IOExecption
+   * Method that nicely prints the AppointmentBook to the specified prtntWriter, passing any IOExecption
    * back to calling routine
    *
    * @param  passedAbstractAppointmentBook : the AppointmentBook to dump
+   * @param  passedAbstractAppointmentBook : the primtWriter to print to
    * @throws IOException                   : errors associated with file writes
    */
-  public void prettyPrint(AbstractAppointmentBook passedAbstractAppointmentBook,
-                          String fileName) throws IOException {
+  public void prettyPrint(AbstractAppointmentBook passedAbstractAppointmentBook, PrintWriter pw) throws IOException {
 
     // Cast abstractAppointmentBook to concrete AppointmentBook in order to access elemente
     AppointmentBook nonAbstractAppointmentBook = (AppointmentBook)passedAbstractAppointmentBook;
@@ -132,15 +123,13 @@ class TextDumper implements AppointmentBookDumper {
           Date date = new Date(); // current date and time
 
           s = "\n\nAppointmentBook for "+ownerStr+ " as of "+date.toString()+":\n";
-          if (fileName.equals("-")) System.out.print(s);
-          else pw.append(s);
+          pw.append(s);
 
           // underline header
           String s2 = "";
-          for (int i=2; i<s.length(); i++) s2 += "-";
+          for (int i=3; i<s.length(); i++) s2 += "-";
           s2 += "\n";
-          if (fileName.equals("-")) System.out.print(s2);
-          else pw.append(s2);
+          pw.append(s2);
 
           // signal header printed
           firstLine = false;
@@ -156,25 +145,23 @@ class TextDumper implements AppointmentBookDumper {
         // if new StartDate, print the date and preceded by a blank line for visual grouping
         if (!dateJustPrinted.equals(beginDateStr)) {
           s = "\nOn "+beginDateStr+":\n";
-          if (fileName.equals("-")) System.out.print(s);
-          else pw.append(s);
+          pw.append(s);
         }
         dateJustPrinted = beginDateStr;
 
         // print appointment time and description information
         s = beginTimeStr+" to "+endTimeStr+" ("+minutesSpan+" minutes):\t"+descriptionStr+"\n";
-        if (fileName.equals("-")) System.out.print(s);
-        else pw.append(s);
+        pw.append(s);
 
       }
 
       // visually differentiate AppointmentBook from other output
       s="\n\n";
-      if (fileName.equals("-")) System.out.print(s);
-      else pw.append(s);
+      pw.append(s);
 
       // Flush and Close the output file
-      if (!fileName.equals("-")) { pw.flush(); pw.close(); }
+      pw.flush();
+      pw.close();
     }
     catch (Exception ex) {
       ex.printStackTrace();

@@ -20,8 +20,6 @@ import java.util.Date;
  */
 public class Project4 {
 
-  public static final String MISSING_ARGS = "Missing command line arguments";
-
   /**
    * Prints README
    */
@@ -140,17 +138,7 @@ public class Project4 {
           }
         }
       }
-/*
-    System.out.println("hostOption is: "+hostOption);
-    System.out.println("hostName is: "+hostName);
-    System.out.println("portOption is: "+portOption);
-    System.out.println("portNumber is: "+portNumber);
-    System.out.println("searchOption is: "+searchOption);
-    System.out.println("printOption is: "+printOption);
-    System.out.println("readmeOption is: "+readmeOption);
-    System.out.println("optCnt is: "+optCnt);
-    System.out.println("totalArgsCnt is: "+args.length);
-*/
+
     // print README and exit if -README found
     if (readmeOption) { printReadme(); System.exit(0); }
 
@@ -160,9 +148,9 @@ public class Project4 {
       System.exit(1);
     }
 
-    // it takes exactly 8 args after the options to specify an appointment:
-    // or 7 args if -search is specified
-    // add that to optCnt to verify and exit it wrong amount
+    // it takes exactly 8 args after the options to specify an appointment
+    // or 7 args if -search is specified.
+    // Add that to optCnt to verify and exit if total amount is wrong.
     if ( (optCnt+8 != args.length && !searchOption) ||
          (optCnt+7 != args.length && searchOption ) ) {
       System.err.println("Invalid number of appointment arguments");
@@ -184,7 +172,7 @@ public class Project4 {
       description = args[args.length - 7];
     }
 
-    // convert command line dates to Date class, flagging and exiting on bad dates
+    // convert command line string dates to Date class, flagging and exiting on bad dates
     Date beginDateTime = null, endDateTime = null ;
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
     try {
@@ -201,36 +189,22 @@ public class Project4 {
       System.err.println("Bad ending date and time: "+endDate+" "+endTime+" "+endTimeMeridiem);
       System.exit(1);
     }
-/*
-    System.out.println("owner = "+owner);
-    System.out.println("description = "+description);
-    System.out.println("beginDate = "+beginDate);
-    System.out.println("beginTime = "+beginTime);
-    System.out.println("beginTimeMeridiem = "+beginTimeMeridiem);
-    System.out.println("beginDateTime = "+beginDateTime);
-    System.out.println("endDate = "+endDate);
-    System.out.println("endTime = "+endTime);
-    System.out.println("endTimeMeridiem = "+endTimeMeridiem);
-    System.out.println("endDateTime = "+endDateTime);
-    System.out.println("beginDateTimeStr = "+beginDateTimeStr);
-    System.out.println("endDateTimeSrt = "+endDateTimeStr);
-*/
 
     // initialize HTTP response var
     HttpRequestHelper.Response response;
 
-    // either search for all or add appointment
+    // initialize RestClient
+    AppointmentBookRestClient client = new AppointmentBookRestClient(hostName, portNumber, owner);
+
+    // either search for or add mew appointment
     if (searchOption) {
 
-    // Search for appointments withing range
+      // TODO Search for appointments within range and prettyPrint them
 
     }
 
-    // add appointment
-    else {
-
-      AppointmentBookRestClient client = new AppointmentBookRestClient(hostName, portNumber, "owner="+owner);
-
+    // add mew appointment
+    else
       try {
         response = client.addApptKeyValuePair(owner,description,beginDateTimeStr,endDateTimeStr);
         checkResponseCode( HttpURLConnection.HTTP_OK, response);
@@ -238,58 +212,33 @@ public class Project4 {
         error("While contacting server: " + ex);
         return;
       }
+
+    // if -print specified, print new appt
+    if (printOption && !searchOption)
+      System.out.println("Added for "+owner+": \""+description+"\" "+beginDateTimeStr+" "+endDateTimeStr);
+
+    // if you've made it this far, exit with success
+    System.exit(0);
+  }
+
+  /**
+   * Makes sure that the give response has the expected HTTP status code
+   * @param code The expected status code
+   * @param response The response from the server
+   */
+  private static void checkResponseCode( int code, HttpRequestHelper.Response response )
+  {
+    if (response.getCode() != code) {
+      error(String.format("Expected HTTP code %d, got code %d.\n\n%s", code,
+                           response.getCode(), response.getContent()));
     }
-/*
-        String owner = "Markus";
-        AppointmentBookRestClient client = new AppointmentBookRestClient(hostName, portNumber, owner);
+  }
 
-        HttpRequestHelper.Response response;
-
-        try {
-            if (key == null) {
-                // Print all key/value pairs
-                response = client.getAllKeysAndValues();
-
-            } else if (value == null) {
-                // Print all values of key
-                response = client.getValues(key);
-
-            } else {
-                // Post the key/value pair
-                response = client.addKeyValuePair(key, value);
-
-            checkResponseCode( HttpURLConnection.HTTP_OK, response);
-
-        } catch ( IOException ex ) {
-            error("While contacting server: " + ex);
-            return;
-        }
-
-        System.out.println(response.getContent());
-*/
-        System.exit(0);
-    }
-
-    /**
-     * Makes sure that the give response has the expected HTTP status code
-     * @param code The expected status code
-     * @param response The response from the server
-     */
-    private static void checkResponseCode( int code, HttpRequestHelper.Response response )
-    {
-        if (response.getCode() != code) {
-            error(String.format("Expected HTTP code %d, got code %d.\n\n%s", code,
-                                response.getCode(), response.getContent()));
-        }
-    }
-
-    private static void error( String message )
-    {
-        PrintStream err = System.err;
-        err.println("** " + message);
-
-        System.exit(1);
-    }
-
+  private static void error( String message )
+  {
+    PrintStream err = System.err;
+    err.println("** " + message);
+    System.exit(1);
+  }
 
 }

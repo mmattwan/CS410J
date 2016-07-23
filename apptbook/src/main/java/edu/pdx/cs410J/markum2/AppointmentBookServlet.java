@@ -37,30 +37,64 @@ public class AppointmentBookServlet extends HttpServlet
   protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
   {
 
+    PrintWriter pw = response.getWriter(); // write to URL
+    String option = null;
+
     // evaluate queryString to determine operation or error
-    if (request.getQueryString() == null)
-      System.out.print("\nIn doGet: no queryString\n");
+    if (request.getQueryString() == null) {
+      pw.println("No URL parameter.");
+      pw.flush();
+      return;
+    }
     else if (request.getQueryString().contains("owner=") &&
              request.getQueryString().contains("beginTime=") &&
              request.getQueryString().contains("endTime=") )
-      System.out.print("\nIn doGet: search queryString\n");
+      option = "query";
     else if (request.getQueryString().contains("owner="))
-      System.out.print("\nIn doGet: Appointmentbook for owner queryString\n");
-    else
-      System.out.print("\nIn doGet: bad QueryString\n");
+      option = "owner";
+    else {
+      pw.println("Invalid URL parameter.");
+      pw.flush();
+      return;
+    }
+
+    System.out.println("In doGet: option = "+option);
+
+    // Extract owner from URL
+    response.setContentType( "text/plain" );
+    String owner = getParameter( "owner", request );
+
+    // Extract owner from apptbook
+    String apptBookOwner = newAppointmentBook.getOwnerName();
+
 /*
-    PrintWriter pw = response.getWriter();
+    System.out.println("owner is \t\t>>>"+owner+"<<<");
+    System.out.println("apptBookOwner is \t>>>"+apptBookOwner+"<<<");
+    System.out.println("apptBookOwner.compareTo(newAppointmentBook.getOwnerName()) = "+apptBookOwner.compareTo(newAppointmentBook.getOwnerName()));
+
+    if (apptBookOwner.compareTo(newAppointmentBook.getOwnerName())!= 0) {
+      pw.println("AppointmentBook owner "+apptBookOwner+" not the same as "+owner);
+      pw.println("Different");
+      System.out.println("Different");
+      pw.flush();
+      return;
+    }
+    pw.println("Same");
+    System.out.println("Same");
+
     pw.println("Owner is "+owner);
-    pw.println(Messages.formatKeyValuePair(key, owner));
     pw.flush();
 */
-    response.setContentType( "text/plain" );
-    String key = getParameter( "owner", request );
-    if (key != null) {
-      writeValue(key, response);
-    } else {
-      writeAllMappings(response);
+
+    // PrettyPrint to URL
+    try {
+      TextDumper dumper = new TextDumper();
+      dumper.prettyPrint(newAppointmentBook, pw);
+    } catch (IOException ex) {
+      System.err.println("** " + ex.getMessage());
+      System.exit(1);
     }
+
   }
 
   /**
@@ -80,13 +114,7 @@ public class AppointmentBookServlet extends HttpServlet
     String description = getParameter( "description", request );
     String beginDateTimeStr = getParameter( "beginDateTimeStr", request );
     String endDateTimeStr = getParameter( "endDateTimeStr", request );
-/*
-    System.out.println("In doPost: ");
-    System.out.println("\towner from getParameter = "+owner);
-    System.out.println("\tdescription from getParameter = "+description);
-    System.out.println("\tbeginDateTimeStr from getParameter = "+beginDateTimeStr);
-    System.out.println("\tendDateTimeStr from getParameter = "+endDateTimeStr);
-*/
+
     // convert DateTimeStr's to Date format
     Date beginDateTime = null, endDateTime = null ;
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
@@ -103,36 +131,29 @@ public class AppointmentBookServlet extends HttpServlet
       System.exit(1);
     }
 
+    // if first appointment, set owner for appointmentBook
+    if (newAppointmentBook.getOwnerName() == null )
+      newAppointmentBook.setOwnerName(owner);
+
     // Construct new Appointment from cmdLine args and add it to AppointmentBook
     Appointment newAppointment = new Appointment(owner, description, beginDateTime, endDateTime);
+
+    // check owner is the same, if not exit
+/*    if (newAppointmentBook.getOwnerName() != owner) {
+      System.err.println("AppointmentBook owner "+newAppointmentBook.getOwnerName()+" not "+owner);
+      return;
+    }
+*/
+    // add new appointment to appointmentBook
     newAppointmentBook.addAppointment(newAppointment);
 
-    // PrettyPrint for debug
-    try {
-      TextDumper dumper = new TextDumper("-");
-      dumper.prettyPrint(newAppointmentBook, "-");
-    } catch (IOException ex) {
-      System.err.println("** " + ex.getMessage());
-      System.exit(1);
-    }
+  }
 
-    /*
-        this.data.put(key, value);
-
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.mappedKeyValue(key, value));
-
-        pw.flush();
-
-        response.setStatus( HttpServletResponse.SC_OK);
-*/
-    }
-
-    /**
-     * Handles an HTTP DELETE request by removing all key/value pairs.  This
-     * behavior is exposed for testing purposes only.  It's probably not
-     * something that you'd want a real application to expose.
-     */
+  /**
+   * Handles an HTTP DELETE request by removing all key/value pairs.  This
+   * behavior is exposed for testing purposes only.  It's probably not
+   * something that you'd want a real application to expose.
+   */
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
