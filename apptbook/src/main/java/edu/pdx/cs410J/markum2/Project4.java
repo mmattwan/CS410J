@@ -202,8 +202,11 @@ public class Project4 {
 
     // POST to url
     try {
-      if (searchOption)
+      if (searchOption) {
+
         response = client.addApptSearchKeyValuePair(owner,beginDateTimeStr,endDateTimeStr);
+        // prettyPrint returned appointmentBook
+      }
       else
         response = client.addApptKeyValuePair(owner,description,beginDateTimeStr,endDateTimeStr);
       checkResponseCode( HttpURLConnection.HTTP_OK, response);
