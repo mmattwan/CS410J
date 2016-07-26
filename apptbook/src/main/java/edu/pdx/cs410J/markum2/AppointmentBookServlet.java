@@ -19,7 +19,7 @@ import java.text.ParseException;
  */
 public class AppointmentBookServlet extends HttpServlet
 {
-  private final Map<String, String> data = new HashMap<>();
+//  private final Map<String, String> data = new HashMap<>();
 
   // Server side appointmentBook
   private final AppointmentBook newAppointmentBook = new AppointmentBook();
@@ -79,14 +79,16 @@ public class AppointmentBookServlet extends HttpServlet
       try {
         beginDateTime = df.parse(beginDateTimeStr);
       } catch (ParseException ex) {
-        System.err.println("Bad beginning Date and time: " + beginDateTimeStr);
-        System.exit(1);
+        pw.println("Bad beginTime: "+beginDateTimeStr);
+        pw.flush();
+        return;
       }
       try {
         endDateTime = df.parse(endDateTimeStr);
       } catch (ParseException ex) {
-        System.err.println("Bad beginning Date and time: " + endDateTimeStr);
-        System.exit(1);
+        pw.println("Bad endTime: "+endDateTimeStr);
+        pw.flush();
+        return;
       }
     }
 
@@ -99,8 +101,9 @@ public class AppointmentBookServlet extends HttpServlet
       else
         dumper.prettyPrint(newAppointmentBook, pw);
     } catch (IOException ex) {
-      System.err.println("** " + ex.getMessage());
-      System.exit(1);
+        pw.println("** " + ex.getMessage());
+        pw.flush();
+        return;
     }
   }
 
@@ -128,14 +131,16 @@ public class AppointmentBookServlet extends HttpServlet
     try {
       beginDateTime = df.parse(beginDateTimeStr);
     } catch (ParseException ex) {
-      System.err.println("Bad beginning Date and time: "+beginDateTimeStr);
-      System.exit(1);
+        pw.println("Bad beginTime: "+beginDateTimeStr);
+        pw.flush();
+        return;
     }
     try {
       endDateTime = df.parse(endDateTimeStr);
     } catch (ParseException ex) {
-      System.err.println("Bad beginning Date and time: "+endDateTimeStr);
-      System.exit(1);
+        pw.println("Bad endTime: "+endDateTimeStr);
+        pw.flush();
+        return;
     }
 
     // if first appointment, set owner for appointmentBook
