@@ -32,17 +32,20 @@ public class AppointmentBookRestClient extends HttpRequestHelper
     this.url = String.format( "http://%s:%d/%s/%s?%s", hostName, port, WEB_APP, SERVLET, "owner="+owner);
   }
 
-  public Response addApptKeyValuePair( String owner, String description, String beginDateTimeStr, String endDateTimeStr) throws IOException
+  public Response addApptKeyValuePair( String owner, String description, String beginDateTimeStr, String endDateTimeStr,AppointmentBook filteredAppointmentBook)
+    throws IOException
   {
-    return postToMyURL("key","owner","value",owner,"description",description,"beginTime",beginDateTimeStr,"endTime",endDateTimeStr);
+    return postToMyURL(filteredAppointmentBook, "key","owner","value",owner,"description",description,"beginTime",beginDateTimeStr,"endTime",endDateTimeStr);
   }
 
-  public Response addApptSearchKeyValuePair( String owner, String beginDateTimeStr, String endDateTimeStr) throws IOException
+  public Response addApptSearchKeyValuePair( String owner, String beginDateTimeStr, String endDateTimeStr,AppointmentBook filteredAppointmentBook)
+    throws IOException
   {
-    return postToMyURL("key","owner","value",owner,"beginTime",beginDateTimeStr,"endTime",endDateTimeStr);
+    return postToMyURL(filteredAppointmentBook, "key","owner","value",owner,"beginTime",beginDateTimeStr,"endTime",endDateTimeStr);
   }
 
-  public Response postToMyURL(String... keysAndValues) throws IOException {
+  public Response postToMyURL(AppointmentBook filteredAppointmentBook, String... keysAndValues) throws IOException {
     return post(this.url, keysAndValues);
   }
+
 }

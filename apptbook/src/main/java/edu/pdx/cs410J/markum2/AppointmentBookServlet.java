@@ -19,10 +19,28 @@ import java.text.ParseException;
  */
 public class AppointmentBookServlet extends HttpServlet
 {
-//  private final Map<String, String> data = new HashMap<>();
-
   // Server side appointmentBook
   private final AppointmentBook newAppointmentBook = new AppointmentBook();
+
+  /**
+   * Converts passed dateTime string to Date, writing to pw on error.
+   * @param dateTimeStr : date/time string to convert from
+   * @param pw          : printWriter to write error message to
+   * @return Date or null if parse fails
+   */
+  protected Date stringToDate(String dateTimeStr, PrintWriter pw) {
+
+    Date returnDate = null;
+    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+    try {
+      returnDate = df.parse(dateTimeStr);
+    } catch (ParseException ex) {
+      pw.println("Bad date/time: "+dateTimeStr);
+      pw.flush();
+      return null;
+    }
+    return returnDate;
+  }
 
   /**
    * Handles an HTTP GET request from a client by writing the value of the key
@@ -63,7 +81,7 @@ public class AppointmentBookServlet extends HttpServlet
     // if empty appointmentBook, return
     if (apptBookOwner == null) return;
 
-    // Make sure owner is that same as apptBook owner
+    // Make sure owner is the same as apptBook owner
     if (!apptBookOwner.equals(owner)) {
       pw.println("AppointmentBook owner "+apptBookOwner+" not the same as "+owner);
       pw.flush();
@@ -74,22 +92,11 @@ public class AppointmentBookServlet extends HttpServlet
     Date beginDateTime=null, endDateTime=null;
     if (option.equals("searchRange")) {
 
-      // convert DateTimeStr's to Date format
-      DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-      try {
-        beginDateTime = df.parse(beginDateTimeStr);
-      } catch (ParseException ex) {
-        pw.println("Bad beginTime: "+beginDateTimeStr);
-        pw.flush();
-        return;
-      }
-      try {
-        endDateTime = df.parse(endDateTimeStr);
-      } catch (ParseException ex) {
-        pw.println("Bad endTime: "+endDateTimeStr);
-        pw.flush();
-        return;
-      }
+      // convert DateTime strings to Date
+      beginDateTime=stringToDate(beginDateTimeStr,pw);
+      if (beginDateTime == null) return;
+      endDateTime=stringToDate(endDateTimeStr,pw);
+      if (endDateTime == null) return;
     }
 
     // PrettyPrint to URL based on option
@@ -103,7 +110,6 @@ public class AppointmentBookServlet extends HttpServlet
     } catch (IOException ex) {
         pw.println("** " + ex.getMessage());
         pw.flush();
-        return;
     }
   }
 
@@ -125,23 +131,14 @@ public class AppointmentBookServlet extends HttpServlet
     String beginDateTimeStr = getParameter( "beginTime", request );
     String endDateTimeStr = getParameter( "endTime", request );
 
-    // convert DateTimeStr's to Date format
-    Date beginDateTime = null, endDateTime = null ;
-    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
-    try {
-      beginDateTime = df.parse(beginDateTimeStr);
-    } catch (ParseException ex) {
-        pw.println("Bad beginTime: "+beginDateTimeStr);
-        pw.flush();
-        return;
-    }
-    try {
-      endDateTime = df.parse(endDateTimeStr);
-    } catch (ParseException ex) {
-        pw.println("Bad endTime: "+endDateTimeStr);
-        pw.flush();
-        return;
-    }
+    // convert DateTime strings to Date
+    Date beginDateTime=null;
+    beginDateTime=stringToDate(beginDateTimeStr,pw);
+    if (beginDateTime == null) return;
+
+    Date endDateTime=null;
+    endDateTime=stringToDate(endDateTimeStr,pw);
+    if (endDateTime == null) return;
 
     // if first appointment, set owner for appointmentBook
     if (newAppointmentBook.getOwnerName() == null )
@@ -193,94 +190,4 @@ public class AppointmentBookServlet extends HttpServlet
       return value;
     }
   }
-
-  /**
-   * Handles an HTTP DELETE request by removing all key/value pairs.  This
-   * behavior is exposed for testing purposes only.  It's probably not
-   * something that you'd want a real application to expose.
-   */
-/*
-  @Override
-  protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    response.setContentType("text/plain");
-
-    this.data.clear();
-
-    PrintWriter pw = response.getWriter();
-    pw.println(Messages.allMappingsDeleted());
-    pw.flush();
-
-    response.setStatus(HttpServletResponse.SC_OK);
-  }
-*/
-  /**
-   * Writes an error message about a missing parameter to the HTTP response.
-   *
-   * The text of the error message is created by {@link Messages#missingRequiredParameter(String)}
-   */
-/*
-  private void missingRequiredParameter( HttpServletResponse response, String parameterName )
-    throws IOException
-  {
-    String message = Messages.missingRequiredParameter(parameterName);
-    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
-  }
-*/
-  /**
-   * Writes the value of the given key to the HTTP response.
-   *
-   * The text of the message is formatted with {@link Messages#getMappingCount(int)}
-   * and {@link Messages#formatKeyValuePair(String, String)}
-   */
-/*
-  private void writeValue( String key, HttpServletResponse response ) throws IOException
-  {
-    String value = this.data.get(key);
-
-    System.out.println("Hello from writeValue");
-
-    PrintWriter pw = response.getWriter();
-    pw.println(Messages.getMappingCount( value != null ? 1 : 0 ));
-    pw.println(Messages.formatKeyValuePair(key, value));
-
-    pw.flush();
-
-    response.setStatus( HttpServletResponse.SC_OK );
-  }
-*/
-  /**
-   * Writes all of the key/value pairs to the HTTP response.
-   *
-   * The text of the message is formatted with
-   * {@link Messages#formatKeyValuePair(String, String)}
-   */
-/*
-  private void writeAllMappings( HttpServletResponse response ) throws IOException
-  {
-    System.out.println("Hello from writeAllMappings");
-
-    PrintWriter pw = response.getWriter();
-    pw.println(Messages.getMappingCount(data.size()));
-
-    for (Map.Entry<String, String> entry : this.data.entrySet()) {
-       pw.println(Messages.formatKeyValuePair(entry.getKey(), entry.getValue()));
-    }
-
-    pw.flush();
-
-    response.setStatus( HttpServletResponse.SC_OK );
-  }
-*/
-/*
-  @VisibleForTesting
-  void setValueForKey(String key, String value) {
-        this.data.put(key, value);
-    }
-
-  @VisibleForTesting
-  String getValueForKey(String key) {
-        return this.data.get(key);
-    }
-*/
 }

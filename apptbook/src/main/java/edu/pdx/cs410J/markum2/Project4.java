@@ -202,13 +202,15 @@ public class Project4 {
 
     // POST to url
     try {
+      AppointmentBook filteredAppointmentBook = new AppointmentBook();
       if (searchOption) {
-
-        response = client.addApptSearchKeyValuePair(owner,beginDateTimeStr,endDateTimeStr);
-        // prettyPrint returned appointmentBook
+        response = client.addApptSearchKeyValuePair(owner,beginDateTimeStr,endDateTimeStr,filteredAppointmentBook);
+        System.out.println("Search works and is displayed in the servelet cmdLine.");
+        System.out.println("I could not figure out how to pass an AppointmentBook back to main");
+        System.out.println("although the logic is there to pass an AppointmentBook to the servlet.");
       }
       else
-        response = client.addApptKeyValuePair(owner,description,beginDateTimeStr,endDateTimeStr);
+        response = client.addApptKeyValuePair(owner,description,beginDateTimeStr,endDateTimeStr,filteredAppointmentBook);
       checkResponseCode( HttpURLConnection.HTTP_OK, response);
     } catch ( IOException ex ) {
       error("While contacting server: " + ex);
