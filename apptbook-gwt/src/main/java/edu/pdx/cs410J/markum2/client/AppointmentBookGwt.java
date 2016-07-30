@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.core.java.lang.Integer_CustomFieldSerializer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -41,30 +42,37 @@ public class  AppointmentBookGwt implements EntryPoint {
   }
 
   private void addWidgets() {
-    this.textBox = new TextBox();
     button = new Button("Ping Server");
-    pingServer();
-  }
-
-  private void pingServer() {
     button.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent clickEvent) {
-        PingServiceAsync async = GWT.create(PingService.class);
-        async.ping(new AsyncCallback<AppointmentBook>() {
-
-          @Override
-          public void onSuccess(AppointmentBook airline) {
-            displayInAlertDialog(airline);
-          }
-
-          @Override
-          public void onFailure(Throwable ex) {
-             alert(ex);
-          }
-        });
+        createAppointments();
       }
     });
+    this.textBox = new TextBox();
+   }
+
+  private void createAppointments() {
+    PingServiceAsync async = GWT.create(PingService.class);
+    int numberOfAppointments = getNumberOfAppointments();
+    async.ping(numberOfAppointments, new AsyncCallback<AppointmentBook>() {
+
+      @Override
+      public void onSuccess(AppointmentBook airline) {
+        displayInAlertDialog(airline);
+      }
+
+      @Override
+      public void onFailure(Throwable ex) {
+         alert(ex);
+      }
+    });
+  }
+
+  private int getNumberOfAppointments() {
+    String number = this.textBox.getText();
+    System.err.println(number);
+    return Integer.parseInt(number);
   }
 
   private void displayInAlertDialog(AppointmentBook airline) {
@@ -86,6 +94,7 @@ public class  AppointmentBookGwt implements EntryPoint {
   @Override
   public void onModuleLoad() {
     RootPanel rootPanel = RootPanel.get();
+    System.err.println("In onModuleLoad ");
     rootPanel.add(button);
     rootPanel.add(textBox);
   }
