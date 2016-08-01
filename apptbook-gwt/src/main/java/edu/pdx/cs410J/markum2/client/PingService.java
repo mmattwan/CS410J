@@ -12,6 +12,6 @@ public interface PingService extends RemoteService {
   /**
    * Returns the current date and time on the server
    */
-  public AppointmentBook ping(int numberOfAppointments);
+  public AppointmentBook createAppointmentBook(int numberOfAppointments);
 
 }
