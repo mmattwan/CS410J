@@ -15,14 +15,14 @@ import java.util.Collection;
  * A basic GWT class that makes sure that we can send an appointment book back from the server
  */
 public class AppointmentBookGwt implements EntryPoint {
+
   private final Alerter alerter;
 
-  @VisibleForTesting
-  private Button button;
-  private Button exportbutton;
-  private Button importbutton;
-  private Button showbutton;
-  private Button helpbutton;
+  private Button createButton;
+  private Button exportButton;
+  private Button importButton;
+  private Button showButton;
+  private Button helpButton;
   private TextBox ownerTextBox, startTextBox, endTextBox, descTextBox;
   private TextBox exportTextBox, importTextBox;
   private TextBox textBox;
@@ -43,14 +43,23 @@ public class AppointmentBookGwt implements EntryPoint {
   }
 
   private void addWidgets() {
-    button = new Button("Create Appointment");
-    button.addClickHandler(new ClickHandler() {
+    createButton = new Button("Create Appointment");
+    createButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent clickEvent) {
         createAppointments();
       }
     });
 
+    helpButton = new Button("Help");
+/*
+    helpButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onHelpClick(ClickEvent helpClickEvent) {
+        showHelp();
+      }
+    });
+*/
     this.ownerTextBox = new TextBox();
     this.descTextBox = new TextBox();
     this.startTextBox = new TextBox();
@@ -58,14 +67,15 @@ public class AppointmentBookGwt implements EntryPoint {
     this.exportTextBox = new TextBox();
     this.importTextBox = new TextBox();
 
-    exportbutton = new Button("Write to file");
-    importbutton = new Button("Read from file");
-    showbutton = new Button("Show Appointments");
-    helpbutton = new Button("Help");
+    exportButton = new Button("Write to file");
+    importButton = new Button("Read from file");
+    showButton = new Button("Show Appointments");
+    helpButton = new Button("Help");
 
     this.textBox = new TextBox();
    }
 
+  // createButton  createButton  createButton  createButton  createButton  createButton
   private void createAppointments() {
     PingServiceAsync async = GWT.create(PingService.class);
     int numberOfAppointments = getNumberOfAppointments();
@@ -83,11 +93,13 @@ public class AppointmentBookGwt implements EntryPoint {
     });
   }
 
+  // createButton  createButton  createButton  createButton  createButton  createButton
   private int getNumberOfAppointments() {
     String number = this.textBox.getText();
     return Integer.parseInt(number);
   }
 
+  // createButton  createButton  createButton  createButton  createButton  createButton
   private void displayInAlertDialog(AppointmentBook airline) {
     StringBuilder sb = new StringBuilder(airline.toString());
     sb.append("\n");
@@ -99,6 +111,47 @@ public class AppointmentBookGwt implements EntryPoint {
     }
     alerter.alert(sb.toString());
   }
+/*
+  // start showHelp
+  // showHelp  showHelp  showHelp  showHelp  showHelp  showHelp  showHelp  showHelp
+  private void createAppointments() {
+    PingServiceAsync async = GWT.create(PingService.class);
+    int numberOfAppointments = getNumberOfAppointments();
+    async.createAppointmentBook(numberOfAppointments, new AsyncCallback<AppointmentBook>() {
+
+      @Override
+      public void onSuccess(AppointmentBook airline) {
+        displayInAlertDialog(airline);
+      }
+
+      @Override
+      public void onFailure(Throwable ex) {
+        alert(ex);
+      }
+    });
+  }
+
+  // showHelp  showHelp  showHelp  showHelp  showHelp  showHelp  showHelp  showHelp
+  private int getNumberOfAppointments() {
+    String number = this.textBox.getText();
+    return Integer.parseInt(number);
+  }
+
+  // showHelp  showHelp  showHelp  showHelp  showHelp  showHelp  showHelp  showHelp
+  private void displayInAlertDialog(AppointmentBook airline) {
+    StringBuilder sb = new StringBuilder(airline.toString());
+    sb.append("\n");
+
+    Collection<Appointment> flights = airline.getAppointments();
+    for (Appointment flight : flights) {
+      sb.append(flight);
+      sb.append("\n");
+    }
+    alerter.alert(sb.toString());
+  }
+// end showHelp
+*/
+
 
   private void alert(Throwable ex) {
     alerter.alert(ex.toString());
@@ -119,15 +172,14 @@ public class AppointmentBookGwt implements EntryPoint {
     verticalPanel1.add(new Label("Description"));        verticalPanel2.add(descTextBox);
     verticalPanel1.add(new Label("Start"));              verticalPanel2.add(startTextBox);
     verticalPanel1.add(new Label("End"));                verticalPanel2.add(endTextBox);
-    verticalPanel1.add(button);                          verticalPanel2.add(new Label("."));
-    verticalPanel1.add(exportbutton);                    verticalPanel2.add(exportTextBox);
-    verticalPanel1.add(importbutton);                    verticalPanel2.add(importTextBox);
-    verticalPanel1.add(showbutton);
-    verticalPanel1.add(helpbutton);
+    verticalPanel1.add(createButton);                    verticalPanel2.add(new Label("."));
+    verticalPanel1.add(exportButton);                    verticalPanel2.add(exportTextBox);
+    verticalPanel1.add(importButton);                    verticalPanel2.add(importTextBox);
+    verticalPanel1.add(showButton);
+    verticalPanel1.add(helpButton);
 
     HorizontalPanel horizontalPanel = new HorizontalPanel();
-    horizontalPanel.add(verticalPanel1);
-    horizontalPanel.add(verticalPanel2);
+    horizontalPanel.add(verticalPanel1);                 horizontalPanel.add(verticalPanel2);
     rootPanel.add(horizontalPanel);
     rootPanel.add(textBox);
   }
