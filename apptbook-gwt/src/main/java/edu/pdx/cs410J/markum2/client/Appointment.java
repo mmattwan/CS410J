@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.markum2.client;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
 import edu.pdx.cs410J.AbstractAppointment;
 
 //import java.text.DateFormat;
@@ -34,47 +35,13 @@ public class Appointment extends AbstractAppointment {
   }
 
   /**
-   * Returns appointment beginning Date and Time in SHORT Date format as a string.
+   * Returns string of passed Date.
    *
-   * @return string : containing appointment's beginDateTime in SHORT format
+   * @return string : containing string version of date
    */
-  public String getBeginTimeString() {
-
-    // define and format date
-//    int f = DateFormat.SHORT;
-//    DateFormat df = DateFormat.getDateTimeInstance(f,f);
-
-    // return the string
-//    return(df.format(this.beginDateTime));
-    return("Meed to fix dates");
-
-  }
-
-  /**
-   * Returns appointment ending Date and Time in SHORT Date format as a string.
-   *
-   * @return string : containing appointment's endDateTime in SHORT format
-   */
-  public String getEndTimeString() {
-
-    // define and format date
-//    int f = DateFormat.SHORT;
-//    DateFormat df = DateFormat.getDateTimeInstance(f,f);
-
-    // return the string
-//    return(df.format(this.endDateTime));
-    return("Need to fix dates");
-
-  }
-
-  /**
-   * Returns appointment description.
-   *
-   * @return string : containing appointment's description
-   */
-  public String getDescription() {
-//    return(this.description);
-    return("Hard Coded Description");
+  private String dateToString(Date date) {
+    String pattern = "MM/dd/yyyy hh:mm a";
+    return DateTimeFormat.getFormat(pattern).format(date);
   }
 
   /**
@@ -87,6 +54,15 @@ public class Appointment extends AbstractAppointment {
   }
 
   /**
+   * Returns appointment description.
+   *
+   * @return string : containing appointment's description
+   */
+  public String getDescription() {
+    return(this.description);
+  }
+
+  /**
    * Returns appointment beginning Date and Time.
    *
    * @return string : containing appointment's beginDateTime
@@ -96,12 +72,30 @@ public class Appointment extends AbstractAppointment {
   }
 
   /**
+   * Returns appointment beginning Date and Time in SHORT Date format as a string.
+   *
+   * @return string : containing appointment's beginDateTime in SHORT format
+   */
+  public String getBeginTimeString() {
+    return(dateToString(beginDateTime));
+  }
+
+  /**
    * Returns appointment ending Date and Time.
    *
    * @return string : containing appointment's endDateTime
    */
   public Date getEndDateTime() {
     return(this.endDateTime);
+  }
+
+  /**
+   * Returns appointment ending Date and Time in SHORT Date format as a string.
+   *
+   * @return string : containing appointment's endDateTime in SHORT format
+   */
+  public String getEndTimeString() {
+    return(dateToString(endDateTime));
   }
 
   /**

@@ -1,7 +1,6 @@
 package edu.pdx.cs410J.markum2.client;
 
 import edu.pdx.cs410J.AbstractAppointmentBook;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -14,8 +13,8 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
 
   private String owner; // owner of the appointment book
 
-//  public TreeSet<Appointment> apptBook = new TreeSet<>(new AppointmentComparator());  // sorted list of appointments
-  public TreeSet<Appointment> apptBook = new TreeSet<>();  // sorted list of appointments
+  public TreeSet<Appointment> apptBook = new TreeSet<>(new AppointmentComparator());  // sorted list of appointments
+//  public TreeSet<Appointment> apptBook = new TreeSet<>();  // sorted list of appointments
 
   /**
    * Constructs an empty appointment book.
@@ -32,15 +31,21 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
     return (this.owner);
   }
 
+  /**
+   * Method to set AppointmentBook owner.
+   *
+   * @param owner : AppointmentBook owner.
+   */
   public void setOwnerName(String owner) {
     this.owner = owner;
   }
+
   /**
    * Method to return appointmentBook
    *
    * @return apptBook : TreeSet of Appointments)
    */
-  public TreeSet<Appointment>  getAppointments() {
+  public TreeSet<Appointment> getAppointments() {
     return apptBook;
   }
 
@@ -61,4 +66,5 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
   public String toString() {
     return this.getOwnerName() + "\'s appointment book with " + this.getAppointments().size() + " appointments";
   }
+
 }
