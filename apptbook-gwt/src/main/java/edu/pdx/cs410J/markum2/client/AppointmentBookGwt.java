@@ -10,14 +10,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
-import java.util.TreeSet;
 
 /**
- * A basic GWT class that makes sure that we can send an appointment book back from the server
+ * Client Class for CS410J Project 5
  */
 public class AppointmentBookGwt implements EntryPoint {
 
   private final Alerter alerter;
+  private AppointmentBook book;
 
   private TextBox ownerTextBox, startTextBox, endTextBox, descTextBox;
   private Button createButton;
@@ -29,12 +29,23 @@ public class AppointmentBookGwt implements EntryPoint {
   private TextArea appointmentBookTextArea;
 
   public AppointmentBookGwt() {
+
     this(new Alerter() {
       @Override
       public void alert(String message) {
         Window.alert(message);
       }
-    });
+      });
+    }
+
+  /**
+   * Validates that time contains 1 or 2 digits for hour and 2 digits for minutes
+   *
+   * @param  timeString string to validate
+   * @return boolean    string adheres to required format
+   */
+  private static boolean validDateTime(String dateString) {
+    return (dateString.matches("([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{1,2}):([0-9]{2}) (am|pm|AM|PM)"));
   }
 
   @VisibleForTesting
@@ -42,6 +53,7 @@ public class AppointmentBookGwt implements EntryPoint {
     this.alerter = alerter;
     addWidgets();
   }
+
 
   private void addWidgets() {
 
@@ -55,7 +67,6 @@ public class AppointmentBookGwt implements EntryPoint {
     exportButton = new Button("Write to file");
     importButton = new Button("Read from file");
     helpButton = new Button("Help");
-
     this.textBox = new TextBox();
 
     createButton = new Button("Create Appointment");
@@ -63,11 +74,33 @@ public class AppointmentBookGwt implements EntryPoint {
       @Override
       public void onClick(ClickEvent clickEvent) {
 
-        String s="";
-        s += ownerTextBox.getText()+"\n";
-        s += descTextBox.getText()+"\n";
-        s += startTextBox.getText()+"\n";
-        s += endTextBox.getText()+"\n";
+        // Make sure all textBoxes contain values
+        if (ownerTextBox.getText() == "" || descTextBox.getText() == "" ||
+            startTextBox.getText() == "" || endTextBox.getText() == "") {
+          Window.alert("Owner, Description, Start, and End must be specified");
+          return;
+        }
+        // If Owner not set, set it
+        if (book.getOwnerName() == null) {
+          Window.alert("Setting AppointmentBook owner to " + ownerTextBox.getText());
+          book.setOwnerName(ownerTextBox.getText());
+        }
+        // Make sure Owner is the same
+        else if (book.getOwnerName() != ownerTextBox.getText()) {
+          Window.alert(ownerTextBox.getText()+" is not"+book.getOwnerName());
+          return;
+        }
+        // Validate Start and End
+        if (!validDateTime(startTextBox.getText())) {
+          Window.alert("Bad Start time.  Example: 01/01/2016 10:00 AM");
+          return;
+        }
+        if (!validDateTime(endTextBox.getText())) {
+          Window.alert("Bad End time.  Example: 01/01/2016 10:00 AM");
+          return;
+        }
+
+        String s = ownerTextBox.getText()+",\""+descTextBox.getText()+"\","+startTextBox.getText()+","+endTextBox.getText();
         appointmentBookTextArea.setText(s);
 
         createAppointments();
@@ -90,8 +123,8 @@ public class AppointmentBookGwt implements EntryPoint {
     async.createAppointmentBook(numberOfAppointments, new AsyncCallback<AppointmentBook>() {
 
       @Override
-      public void onSuccess(AppointmentBook airline) {
-        displayInAlertDialog(airline);
+      public void onSuccess(AppointmentBook book) {
+        displayInAlertDialog(book);
       }
 
       @Override
@@ -138,6 +171,9 @@ public class AppointmentBookGwt implements EntryPoint {
 
   @Override
   public void onModuleLoad() {
+
+    book = new AppointmentBook();
+
     RootPanel rootPanel = RootPanel.get();
 
     appointmentBookTextArea.setHeight("400");
@@ -145,7 +181,7 @@ public class AppointmentBookGwt implements EntryPoint {
     appointmentBookTextArea.setCharacterWidth(100);
     appointmentBookTextArea.setReadOnly(true);
 
-    ownerTextBox.setVisibleLength(30);
+    ownerTextBox.setVisibleLength(19);
     startTextBox.setVisibleLength(19);
     endTextBox.setVisibleLength(19);
     descTextBox.setVisibleLength(30);
@@ -153,7 +189,7 @@ public class AppointmentBookGwt implements EntryPoint {
     importTextBox.setVisibleLength(30);
 
     VerticalPanel vertPanel1 = new VerticalPanel(), vertPanel2 = new VerticalPanel(), vertPanel3 = new VerticalPanel();
-    vertPanel1.setSpacing(20);                      vertPanel2.setSpacing(17);        vertPanel3.add(appointmentBookTextArea);
+    vertPanel1.setSpacing(18);                      vertPanel2.setSpacing(17);        vertPanel3.add(appointmentBookTextArea);
     vertPanel1.add(new Label("Owner"));             vertPanel2.add(ownerTextBox);
     vertPanel1.add(new Label("Description"));       vertPanel2.add(descTextBox);
     vertPanel1.add(new Label("Start"));             vertPanel2.add(startTextBox);

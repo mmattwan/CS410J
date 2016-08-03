@@ -32,6 +32,9 @@ public class AppointmentBook extends AbstractAppointmentBook<Appointment> {
     return (this.owner);
   }
 
+  public void setOwnerName(String owner) {
+    this.owner = owner;
+  }
   /**
    * Method to return appointmentBook
    *
