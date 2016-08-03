@@ -9,7 +9,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
-import java.util.Collection;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 /**
  * A basic GWT class that makes sure that we can send an appointment book back from the server
@@ -18,12 +19,12 @@ public class AppointmentBookGwt implements EntryPoint {
 
   private final Alerter alerter;
 
+  private TextBox ownerTextBox, startTextBox, endTextBox, descTextBox;
   private Button createButton;
   private Button exportButton;
   private Button importButton;
-  private Button helpButton;
-  private TextBox ownerTextBox, startTextBox, endTextBox, descTextBox;
   private TextBox exportTextBox, importTextBox;
+  private Button helpButton;
   private TextBox textBox;
   private TextArea appointmentBookTextArea;
 
@@ -36,13 +37,27 @@ public class AppointmentBookGwt implements EntryPoint {
     });
   }
 
-//  @VisibleForTesting
+  @VisibleForTesting
   AppointmentBookGwt(Alerter alerter) {
     this.alerter = alerter;
     addWidgets();
   }
 
   private void addWidgets() {
+
+    this.ownerTextBox = new TextBox();
+    this.descTextBox = new TextBox();
+    this.startTextBox = new TextBox();
+    this.endTextBox = new TextBox();
+    this.exportTextBox = new TextBox();
+    this.importTextBox = new TextBox();
+    this.appointmentBookTextArea = new TextArea();
+    exportButton = new Button("Write to file");
+    importButton = new Button("Read from file");
+    helpButton = new Button("Help");
+
+    this.textBox = new TextBox();
+
     createButton = new Button("Create Appointment");
     createButton.addClickHandler(new ClickHandler() {
       @Override
@@ -55,7 +70,6 @@ public class AppointmentBookGwt implements EntryPoint {
         s += endTextBox.getText()+"\n";
         appointmentBookTextArea.setText(s);
 
-        Window.alert("create clicked");
         createAppointments();
       }
     });
@@ -65,27 +79,11 @@ public class AppointmentBookGwt implements EntryPoint {
       @Override
       public void onClick(ClickEvent clickEvent) {
         Window.alert("help clicked");
-//        showHelp();
       }
     });
 
-    this.ownerTextBox = new TextBox();
-    this.descTextBox = new TextBox();
-    this.startTextBox = new TextBox();
-    this.endTextBox = new TextBox();
-    this.exportTextBox = new TextBox();
-    this.importTextBox = new TextBox();
-    this.appointmentBookTextArea = new TextArea();
-
-    exportButton = new Button("Write to file");
-    importButton = new Button("Read from file");
-    helpButton = new Button("Help");
-
-    this.textBox = new TextBox();
    }
 
-  // begin createButton
-  // createButton  createButton  createButton  createButton  createButton  createButton
   private void createAppointments() {
     PingServiceAsync async = GWT.create(PingService.class);
     int numberOfAppointments = getNumberOfAppointments();
@@ -103,50 +101,31 @@ public class AppointmentBookGwt implements EntryPoint {
     });
   }
 
-  // createButton  createButton  createButton  createButton  createButton  createButton
   private int getNumberOfAppointments() {
     String number = this.textBox.getText();
     return Integer.parseInt(number);
   }
 
-  // createButton  createButton  createButton  createButton  createButton  createButton
   private void displayInAlertDialog(AppointmentBook airline) {
-    StringBuilder sb = new StringBuilder(airline.toString());
-    sb.append("\n");
 
-    Collection<Appointment> flights = airline.getAppointments();
-    for (Appointment flight : flights) {
-      sb.append(flight);
-      sb.append("\n");
+    String s = "hello from displayInAlertDialog";
+
+    // Set up AppointmentBook iterator
+    Iterator iterator = airline.apptBook.iterator();
+
+    while (iterator.hasNext()) {
+      s += "iterating";
+      Object a = iterator.next();       // next appointment extracted as Object
+      Appointment ac = (Appointment)a;  // cast Object to Appointment
+
+      s += ac.getDescription();
+      s += ac.getBeginTimeString();
+      s += ac.getEndTimeString();
+      s += ac.getEndTimeString();
     }
-    alerter.alert(sb.toString());
+    appointmentBookTextArea.setText(s);
+//    alerter.alert(s);
   }
-
-  // end createButton
-
-  // start showHelp
-  private void showHelp() {
-
-  //    HelpServiceAsync async = GWT.create(HelpService.class);
-/*
-//    asyncb.createAppointmentBook(numberOfAppointments, new AsyncCallback<AppointmentBook>() {
-    async.showHelp( {
-
-      @Override
-      public void onSuccess() {
-        alerter.alert("Help");
-      }
-
-      @Override
-      public void onFailure(Throwable ex) {
-        alert(ex);
-      }
-
-    });
-*/
-  }
-// end showHelp
-
 
   private void alert(Throwable ex) {
     alerter.alert(ex.toString());
@@ -164,7 +143,6 @@ public class AppointmentBookGwt implements EntryPoint {
     appointmentBookTextArea.setHeight("400");
     appointmentBookTextArea.setVisibleLines(40);
     appointmentBookTextArea.setCharacterWidth(100);
-    appointmentBookTextArea.setText("Hello");
     appointmentBookTextArea.setReadOnly(true);
 
     ownerTextBox.setVisibleLength(30);
