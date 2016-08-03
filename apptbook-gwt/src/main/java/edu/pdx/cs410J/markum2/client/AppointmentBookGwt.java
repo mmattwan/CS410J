@@ -48,12 +48,36 @@ public class AppointmentBookGwt implements EntryPoint {
     return (dateString.matches("([0-9]{1,2})/([0-9]{1,2})/([0-9]{4}) ([0-9]{1,2}):([0-9]{2}) (am|pm|AM|PM)"));
   }
 
+  /**
+   * Return README string
+   */
+  private String toStringReadme() {
+    return ("CS410J Project 5\n"+
+            "Author: Markus Mattwandel\n"+
+            "\n"+
+            "This webpage implements an AppointmentBook\n"+
+            "\n"+
+            "The Create/Search button creates the Appointment specified in the" +
+            "Owner, Description, Start and End fields or searches and updates" +
+            "display for all appointments that overlap Start and End.\n"+
+            "\n"+
+            "Start and End must be of the following format:\n"+
+            "   1-2_digit_day/1-2_digit_month/4_digit_year follower by\n" +
+            "   1-2_digit_hour:2_digit_minute AM_or_PM\n"+
+            "\n"+
+            "All active Appointments are displayed in the text field on the right,\n" +
+            "unless a search occurred in which case only the Appointments\n" +
+            "meeting the search criteria are displayed until another add or\n" +
+            "search occurs.\n"+
+            "\n"+
+            "Appointments are only active as long as the webpage is loaded.");
+  }
+
   @VisibleForTesting
   AppointmentBookGwt(Alerter alerter) {
     this.alerter = alerter;
     addWidgets();
   }
-
 
   private void addWidgets() {
 
@@ -111,7 +135,7 @@ public class AppointmentBookGwt implements EntryPoint {
     helpButton.addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent clickEvent) {
-        Window.alert("help clicked");
+        Window.alert(toStringReadme());
       }
     });
 
