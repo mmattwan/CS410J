@@ -119,13 +119,10 @@ public class AppointmentBookGwt implements EntryPoint {
       public void onSuccess(AppointmentBook book) {
         Date rangeStart = stringToDate(startTextBox.getText());
         Date rangeEnd = stringToDate(endTextBox.getText());
-        Window.alert("Success!");
-        if (descTextBox.getText().isEmpty()) {
+        if (descTextBox.getText().isEmpty())
           prettyPrintToTextArea(book, rangeStart, rangeEnd);
-        }
-        else {
+        else
           prettyPrintToTextArea(book, null, null);
-        }
       }
       @Override
       public void onFailure(Throwable ex) {
@@ -188,16 +185,10 @@ public class AppointmentBookGwt implements EntryPoint {
 
       }
 
-      if (rangeStart == null && rangeEnd == null) {
-        printIt = true;
-      }
-      else {
-        if (ac.getEndDateTime().after(rangeStart) && ac.getBeginDateTime().before(rangeEnd) ) {
-          printIt = true;
-        }
-      else
-          printIt = false;
-      }
+      // check date args null before checking if in range
+      if (rangeStart == null && rangeEnd == null) printIt = true;
+      else if (ac.getEndDateTime().after(rangeStart) && ac.getBeginDateTime().before(rangeEnd) ) printIt = true;
+      else printIt = false;
 
       if (printIt) {
         // extract DateTime parts as strings
@@ -244,8 +235,8 @@ public class AppointmentBookGwt implements EntryPoint {
       book.setOwnerName(ownerTextBox.getText());
     }
     // Make sure Owner is the same
-    else if (book.getOwnerName() != ownerTextBox.getText()) {
-      Window.alert(ownerTextBox.getText()+" is not"+book.getOwnerName());
+    else if (!book.getOwnerName().equals(ownerTextBox.getText())) {
+        Window.alert("Sorry, "+ownerTextBox.getText()+"!\n"+book.getOwnerName()+" owns this AppointmentBook.");
       return false;
     }
     // Validate Start and End Strings
@@ -340,6 +331,7 @@ public class AppointmentBookGwt implements EntryPoint {
 
     RootPanel rootPanel = RootPanel.get();
 
+    // Define input textbox sizes
     ownerTextBox.setVisibleLength(19);
     startTextBox.setVisibleLength(19);
     endTextBox.setVisibleLength(19);
@@ -347,6 +339,7 @@ public class AppointmentBookGwt implements EntryPoint {
     exportTextBox.setVisibleLength(30);
     importTextBox.setVisibleLength(30);
 
+    // Auto-fill Start to current DateTime, and End to current DateTime + 1 hour
     Date curDate = new Date();
     Date curDatePlusOneHour = new Date(curDate.getTime() + (10000 * 60 * 6));
 
