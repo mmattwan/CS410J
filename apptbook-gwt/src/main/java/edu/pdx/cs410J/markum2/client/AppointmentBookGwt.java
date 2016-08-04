@@ -32,7 +32,7 @@ public class AppointmentBookGwt implements EntryPoint {
 
   // The UI Widgets
   private TextBox ownerTextBox, startTextBox, endTextBox, descTextBox;
-  private Button createButton, searchButton;
+  private Button createButton;
   private Button exportButton, importButton;
   private TextBox exportTextBox, importTextBox;
   private Button helpButton;
@@ -85,15 +85,6 @@ public class AppointmentBookGwt implements EntryPoint {
         }
       });
 
-      // Export Button
-      searchButton = new Button("Search Appointments");
-      searchButton.addClickHandler(new ClickHandler() {
-        @Override
-        public void onClick(ClickEvent clickEvent) {
-          Window.alert("Search clicked");
-        }
-      });
-
       // Help Button
       helpButton = new Button("Help");
       helpButton.addClickHandler(new ClickHandler() {
@@ -126,8 +117,15 @@ public class AppointmentBookGwt implements EntryPoint {
 
       @Override
       public void onSuccess(AppointmentBook book) {
+        Date rangeStart = stringToDate(startTextBox.getText());
+        Date rangeEnd = stringToDate(endTextBox.getText());
         Window.alert("Success!");
-        prettyPrintToTextArea(book);
+        if (descTextBox.getText().isEmpty()) {
+          prettyPrintToTextArea(book, rangeStart, rangeEnd);
+        }
+        else {
+          prettyPrintToTextArea(book, null, null);
+        }
       }
       @Override
       public void onFailure(Throwable ex) {
@@ -136,15 +134,18 @@ public class AppointmentBookGwt implements EntryPoint {
     });
   }
 
-  private void prettyPrintToTextArea(AppointmentBook airline) {
+  private void prettyPrintToTextArea(AppointmentBook book,Date rangeStart, Date rangeEnd) {
 
     String s="";
     boolean firstLine = true;     // signals first line, e.g. print header
     String dateJustPrinted = "";  // contains last date printed
     String prettyString = "";     // string to print to file or screen
+    boolean printIt = false;
+
+    bookTextArea.setText(prettyString);
 
     // Set up AppointmentBook iterator
-    Iterator iterator = airline.apptBook.iterator();
+    Iterator iterator = book.apptBook.iterator();
 
     // write Appointments to bookTextArea as CSV for now
     // TODO: replace with PrettyPrint
@@ -169,34 +170,54 @@ public class AppointmentBookGwt implements EntryPoint {
         s += "\n AppointmentBook for "+ownerStr+ " as of "+date.toString()+":\n";
         prettyString += s;
 
+        if (rangeStart != null && rangeEnd != null) {
+          s = " Filtered on Appointments overlapping\n ";
+          prettyString += s;
+          s = rangeStart+" and "+rangeEnd+":\n";
+          prettyString += s;
+        }
+
         // underline header
         String s2 = " ";
-        for (int i=2; i<s.length(); i++) s2 += "-";
+        for (int i=1; i<s.length(); i++) s2 += "-";
         s2 += "\n";
         prettyString += s2;
 
         // signal header printed
         firstLine = false;
+
       }
 
-      // extract DateTime parts as strings
-      String[] beginDateTimeParts = beginDateTimeStr.split(" ");
-      String beginDateStr = beginDateTimeParts[0];
-      String beginTimeStr = beginDateTimeParts[1]+" "+beginDateTimeParts[2];
-      String[] endDateTimeParts = endDateTimeStr.split(" ");
-      String endTimeStr = endDateTimeParts[1]+" "+endDateTimeParts[2];
+      if (rangeStart == null && rangeEnd == null) {
+        printIt = true;
+      }
+      else {
+        if (ac.getEndDateTime().after(rangeStart) && ac.getBeginDateTime().before(rangeEnd) ) {
+          printIt = true;
+        }
+      else
+          printIt = false;
+      }
 
-      // if new StartDate, print the date and preceded by a blank line for visual grouping
-      if (!dateJustPrinted.equals(beginDateStr)) {
-        s = "\n On "+beginDateStr+":\n";
+      if (printIt) {
+        // extract DateTime parts as strings
+        String[] beginDateTimeParts = beginDateTimeStr.split(" ");
+        String beginDateStr = beginDateTimeParts[0];
+        String beginTimeStr = beginDateTimeParts[1] + " " + beginDateTimeParts[2];
+        String[] endDateTimeParts = endDateTimeStr.split(" ");
+        String endTimeStr = endDateTimeParts[1] + " " + endDateTimeParts[2];
+
+        // if new StartDate, print the date preceded by a blank line for visual grouping
+        if (!dateJustPrinted.equals(beginDateStr)) {
+          s = "\n On " + beginDateStr + ":\n";
+          prettyString += s;
+        }
+        dateJustPrinted = beginDateStr;
+
+        // print appointment time and description information
+        s = " " + beginTimeStr + " to " + endTimeStr + " (" + minutesSpan + " minutes):\t" + descriptionStr + "\n";
         prettyString += s;
       }
-      dateJustPrinted = beginDateStr;
-
-      // print appointment time and description information
-      s = " "+beginTimeStr+" to "+endTimeStr+" ("+minutesSpan+" minutes):\t"+descriptionStr+"\n";
-      prettyString += s;
-
     }
     bookTextArea.setText(prettyString);
   }
@@ -285,11 +306,10 @@ public class AppointmentBookGwt implements EntryPoint {
             "\n"+
             "This webpage implements an AppointmentBook\n"+
             "\n"+
-            "The Create button creates the Appointment if Owner, Description\n"+
-            "Start and End fields are specified.\n"+
-            "\n"+
-            "The Search button searches and updates display for all appointments\n"+
-            "that overlap Start and End fie;ds.\n"+
+            "The Create/Search button creates the Appointment if Owner, Description\n"+
+            "Start and End fields are specified.  If Description is not specified,\n"+
+            "the display at the right will be updated with Appointments between Start.\n"+
+            "and End.\n"+
             "\n"+
             "Start and End fields must be of the following format:\n"+
             "   1-2_digit_day/1-2_digit_month/4_digit_year follower by\n" +
@@ -328,17 +348,19 @@ public class AppointmentBookGwt implements EntryPoint {
     importTextBox.setVisibleLength(30);
 
     Date curDate = new Date();
+    Date curDatePlusOneHour = new Date(curDate.getTime() + (10000 * 60 * 6));
+
     startTextBox.setText(dateToString(curDate));
-    endTextBox.setText(dateToString(curDate));
+    endTextBox.setText(dateToString(curDatePlusOneHour  ));
 
     HorizontalPanel horizontalPanel = new HorizontalPanel();
     VerticalPanel vertPanel1 = new VerticalPanel(), vertPanel2 = new VerticalPanel(), vertPanel3 = new VerticalPanel();
-    vertPanel1.setSpacing(19);                      vertPanel2.setSpacing(17);        bookTextArea.setHeight("400");
+    vertPanel1.setSpacing(18);                      vertPanel2.setSpacing(17);        bookTextArea.setHeight("400");
     vertPanel1.add(new Label("Owner"));             vertPanel2.add(ownerTextBox);     bookTextArea.setVisibleLines(40);
-    vertPanel1.add(new Label("Description"));       vertPanel2.add(descTextBox);      bookTextArea.setCharacterWidth(70);
+    vertPanel1.add(new Label("Description"));       vertPanel2.add(descTextBox);      bookTextArea.setCharacterWidth(80);
     vertPanel1.add(new Label("Start"));             vertPanel2.add(startTextBox);     bookTextArea.setReadOnly(true);
     vertPanel1.add(new Label("End"));               vertPanel2.add(endTextBox);       vertPanel3.add(bookTextArea);
-    vertPanel1.add(createButton);                   vertPanel2.add(searchButton);
+    vertPanel1.add(createButton);                   vertPanel2.add(new Label("."));
     vertPanel1.add(importButton);                   vertPanel2.add(importTextBox);
     vertPanel1.add(exportButton);                   vertPanel2.add(exportTextBox);
     vertPanel1.add(helpButton);
