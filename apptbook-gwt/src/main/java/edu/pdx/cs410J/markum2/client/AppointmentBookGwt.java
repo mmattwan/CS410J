@@ -285,18 +285,30 @@ public class AppointmentBookGwt implements EntryPoint {
             "\n"+
             "This webpage implements an AppointmentBook\n"+
             "\n"+
-            "The Create/Search button creates the Appointment specified in the" +
-            "Owner, Description, Start and End fields or searches and updates" +
-            "display for all appointments that overlap Start and End.\n"+
+            "The Create button creates the Appointment if Owner, Description\n"+
+            "Start and End fields are specified.\n"+
             "\n"+
-            "Start and End must be of the following format:\n"+
+            "The Search button searches and updates display for all appointments\n"+
+            "that overlap Start and End fie;ds.\n"+
+            "\n"+
+            "Start and End fields must be of the following format:\n"+
             "   1-2_digit_day/1-2_digit_month/4_digit_year follower by\n" +
             "   1-2_digit_hour:2_digit_minute AM_or_PM\n"+
             "\n"+
+            "The Import button load all files specified in the corresponding\n"+
+            "field into the appointment book.\n" +
+            "\n"+
+            "The Export button writes all Appointments in the Appointment book\n"+
+            "to the file specified in the corresponding field\n"+
+            "\n"+
+            "AppointmentBook files must be of the following format:\n"+
+            "   Owner, Description, startDateTime, endDataTime\n" +
+            "Descriptions spanning spaces must be in double quotes and start and\n"+
+            "end date/times must be of the smae format specified above.\n"+
+            "\n"+
             "All active Appointments are displayed in the text field on the right,\n" +
             "unless a search occurred in which case only the Appointments\n" +
-            "meeting the search criteria are displayed until another add or\n" +
-            "search occurs.\n"+
+            "meeting the search criteria are displayed.\n" +
             "\n"+
             "Appointments are only active as long as the webpage is loaded.");
   }

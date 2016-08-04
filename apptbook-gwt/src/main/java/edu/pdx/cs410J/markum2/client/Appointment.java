@@ -27,13 +27,13 @@ public class Appointment extends AbstractAppointment {
    *  @param beginDateTime   : begin time and date
    *  @param endDateTime     : end time and date
    */
-  public Appointment() {
-  }
   public Appointment(String owner, String description, Date beginDateTime, Date endDateTime) {
     this.owner = owner;
     this.description = description;
     this.beginDateTime = beginDateTime;
     this.endDateTime = endDateTime;
+  }
+  public Appointment() {
   }
 
   /**
